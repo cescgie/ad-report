@@ -8,14 +8,34 @@ class Kampagne extends Controller {
 
    public function index() {
       $data['title'] = 'Kampagne';
-      $select = $this->_model->all("kampagne");
-      
-      echo '<pre>';
-      foreach ($select as $key => $value) {
-      	print_r($value);
-      }  
-      echo '</pre>';
 
+      $datums = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum",null,"GROUP BY Datum","ORDER BY Datum ASC");
+      $stundes = $this->_model->selectClauseGroupByOrderBy("kampagne","Stunde",null,"GROUP BY Stunde","ORDER BY Stunde ASC");
+
+      $data['Datum'] = $datums;
+      $data['Stunde'] = $stundes;
+
+      if(Session::get('Datum')){
+        $datum = Session::get('Datum');
+        $clause1 = "Datum = '$datum' ";
+      }else{
+        $clause1 = "Datum != '' ";
+      }
+
+      if(Session::get('Stunde')){
+        $stunde = Session::get('Stunde');
+        $stunde = str_replace("'","",$stunde);
+        $clause2 = "Stunde = '$stunde' ";
+      }else{
+        $clause2 = "Stunde != '' ";
+      }
+
+      $data["datas"] = $this->_model->selectClauseGroupByOrderBy("kampagne","*","WHERE $clause1 AND $clause2",null,null);
+
+      $this->_view->render('header', $data);
+
+      $this->_view->render('kampagne/index', $data);
+      $this->_view->render('footer', $data);
    }
 
    public function date($date){
@@ -26,7 +46,7 @@ class Kampagne extends Controller {
       echo '<pre>';
       foreach ($select as $key => $value) {
       	print_r($value);
-      }  
+      }
       echo '</pre>';
    }
 
@@ -86,22 +106,57 @@ class Kampagne extends Controller {
             		$rowDa[$row_headers[0][$j]] = $value;
             	}
           	}
-          	$j++;	
+          	$j++;
           }
           $data['Datum']=$rowDa['Datum'];
           $data['Stunde']=$rowDa['Stunde'];
           $data['Impressions']=$rowDa['Impressions'];
           $data['AdCounts']=$rowDa['AdCounts'];
 
-          $check_exists = $this->_model->check("kampagne",$data['kampagne'],$rowDa['Datum'],$rowDa['Stunde']);
+          $check_exists = $this->_model->check("kampagne",$data['Kampagne'],$rowDa['Datum'],$rowDa['Stunde']);
           if($check_exists[0]['count']==0){
           	 $insert = $this->_model->insert("kampagne",$data);
           }
-          
+          print_r($check_exists);
+
           echo '<pre>';
           print_r($data);
           echo '</pre>';
        }
    }
+
+   public function set_Datum(){
+     $datum = $_GET['datum'];
+     if(Session::get('Datum')){
+       Session::clear('Datum');
+     }
+     Session::set('Datum',$datum);
+     URL::STAYCURRENTPAGE();
+  }
+
+  public function remove_date(){
+     if(Session::get('Datum')){
+       Session::clear('Datum');
+     }
+     URL::STAYCURRENTPAGE();
+  }
+
+  public function set_Stunde(){
+    $stunde = $_GET['stunde'];
+    if(Session::get('Stunde')){
+      Session::clear('Stunde');
+    }
+    Session::set('Stunde',$stunde);
+    URL::STAYCURRENTPAGE();
+  }
+
+  public function remove_stunde(){
+    if(Session::get('Stunde')){
+      Session::clear('Stunde');
+    }
+    URL::STAYCURRENTPAGE();
+  }
+
+
 }
 ?>

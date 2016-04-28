@@ -30,4 +30,17 @@ class URL {
       }
       return DIR . $path;
    }
+
+   public static function SCRIPTS($filename = false, $path = 'static/js/') {
+      if ($filename) {
+         $path .= "$filename.js";
+      }
+      return DIR . $path;
+   }
+
+   public static function STAYCURRENTPAGE() {
+      header("location:javascript://history.go(-1)");
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
+      exit;
+   }
 }

@@ -29,7 +29,15 @@ class Kampagne_Model extends Model {
    }
 
    public function selectOneClause($table,$clause){
-   	    return $this->_db->select("SELECT * FROM $table WHERE $clause ORDER BY Datum");
+   	  return $this->_db->select("SELECT * FROM $table WHERE $clause ORDER BY Datum");
+   }
+
+   public function selectClauseGroupByOrderBy($table,$select,$clause=null,$groupby=null,$orderby=null){
+     return $this->_db->select("SELECT $select FROM $table $clause $groupby $orderby");
+   }
+
+   public function all_distinct($table,$column,$where=null){
+     return $this->_db->select("SELECT DISTINCT($column) AS $column FROM $table WHERE $where");
    }
 
 }
