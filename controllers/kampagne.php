@@ -18,24 +18,64 @@ class Kampagne extends Controller {
       if(Session::get('Datum')){
         $datum = Session::get('Datum');
         $clause1 = "Datum = '$datum' ";
+        $select = "*";
       }else{
-        $clause1 = "Datum != '' ";
+        $clause1 = "Datum != '2016-04-20' ";
+        Session::set('Datum','2016-04-20');
       }
 
       if(Session::get('Stunde')){
         $stunde = Session::get('Stunde');
         $stunde = str_replace("'","",$stunde);
         $clause2 = "Stunde = '$stunde' ";
+        $select = "*";
       }else{
         $clause2 = "Stunde != '' ";
+        $groupby = "GROUP BY Datum,Kampagne";
+        $select = "Datum,Kampagne,SUM(Impressions) as Impressions,SUM(AdCounts) as AdCounts";
       }
 
-      $data["datas"] = $this->_model->selectClauseGroupByOrderBy("kampagne","*","WHERE $clause1 AND $clause2",null,null);
+      $data["datas"] = $this->_model->selectClauseGroupByOrderBy("kampagne",$select,"WHERE $clause1 AND $clause2",$groupby,null);
 
       $this->_view->render('header', $data);
 
       $this->_view->render('kampagne/index', $data);
       $this->_view->render('footer', $data);
+   }
+
+   public function getGraph(){
+
+     if(Session::get('Datum')){
+       $datum = Session::get('Datum');
+       $clause1 = "Datum = '$datum' ";
+       $select = "*";
+     }else{
+       $clause1 = "Datum != '2016-04-20' ";
+       Session::set('Datum','2016-04-20');
+     }
+
+     $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1",null,null);
+     $array = [];
+     for ($i=0; $i < 24 ; $i++) {
+       $array[] = array('y'=>"$i");
+     }
+
+     $name = null;
+     foreach ($data["graphs"] as $key => $value) {
+       if (strpos($value['Kampagne'], '12250') !== false) {
+         $value['Kampagne'] = 'a';
+       }elseif (strpos($value['Kampagne'], '12169') !== false) {
+         $value['Kampagne'] = 'b';
+       }else {
+         $value['Kampagne'] = 'c';
+       }
+       $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
+       if ($array[$value['Stunde']]['y'] == $value['Stunde']) {
+         $array[$value['Stunde']][$value['Kampagne']] = $diff;
+       }
+       $name = $value['Kampagne'];
+     }
+     return print_r(json_encode($array));
    }
 
    public function date($date){
