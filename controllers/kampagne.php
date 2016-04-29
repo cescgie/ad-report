@@ -50,11 +50,18 @@ class Kampagne extends Controller {
        $clause1 = "Datum = '$datum' ";
        $select = "*";
      }else{
-       $clause1 = "Datum != '2016-04-20' ";
+       $clause1 = "Datum = '2016-04-20' ";
        Session::set('Datum','2016-04-20');
      }
 
-     $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1",null,null);
+     if(Session::get('Kampagne')){
+       $kampagne = Session::get('Kampagne');
+       $clause2 = "Kampagne = '$kampagne'";
+     }else{
+       $clause2 = "Kampagne != '' ";
+     }
+
+     $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1 AND $clause2",null,null);
      $array = [];
      for ($i=0; $i < 24 ; $i++) {
        $array[] = array('y'=>"$i");
@@ -71,11 +78,40 @@ class Kampagne extends Controller {
        }
        $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
        if ($array[$value['Stunde']]['y'] == $value['Stunde']) {
-         $array[$value['Stunde']][$value['Kampagne']] = $diff;
+         if (Session::get('Kampagne')) {
+           $array[$value['Stunde']][$value['Kampagne']] = $diff;
+         }else{
+           if ($value['Kampagne']=='a') {
+            $array[$value['Stunde']]['a'] = $diff;
+           }
+           if ($value['Kampagne']=='b') {
+            $array[$value['Stunde']]['b'] = $diff - $array[$value['Stunde']]['a'];
+           }
+           if ($value['Kampagne']=='c') {
+            $array[$value['Stunde']]['c'] = $diff - $array[$value['Stunde']]['a'] - $array[$value['Stunde']]['b'];
+           }
+         }
        }
        $name = $value['Kampagne'];
      }
      return print_r(json_encode($array));
+   }
+
+   public function getOverllFilledImpression(){
+     if(Session::get('Datum')){
+       $datum = Session::get('Datum');
+       $clause1 = "Datum = '$datum' ";
+     }else{
+       $clause1 = "Datum = '2016-04-20' ";
+       Session::set('Datum','2016-04-20');
+     }
+
+     $select = "Kampagne as label,SUM(AdCounts) as value";
+     $groupby = "GROUP By Datum,Kampagne";
+
+     $data["doghnutOFI"] = $this->_model->selectClauseGroupByOrderBy("kampagne",$select,"WHERE $clause1",$groupby,null);
+
+     return print_r(json_encode($data["doghnutOFI"]));
    }
 
    public function date($date){
@@ -197,6 +233,21 @@ class Kampagne extends Controller {
     URL::STAYCURRENTPAGE();
   }
 
+  public function set_Kampagne($kamp){
+    $kampagne = $kamp;
+    if(Session::get('Kampagne')){
+      Session::clear('Kampagne');
+    }
+    Session::set('Kampagne',$kampagne);
+    URL::STAYCURRENTPAGE();
+ }
+
+ public function remove_Kampagne(){
+    if(Session::get('Kampagne')){
+      Session::clear('Kampagne');
+    }
+    URL::STAYCURRENTPAGE();
+ }
 
 }
 ?>

@@ -70,7 +70,7 @@
            <?php if(Session::get('Stunde')):?>
              <option value=""><?= (strlen(str_replace("'","",Session::get('Stunde')))==1)? '0'.str_replace("'","",Session::get('Stunde')) : str_replace("'","",Session::get('Stunde'))?>:00</option>
            <?php endif;?>
-           <option value="">Ganzer Tag</option>
+           <option value="all">Ganzer Tag</option>
            <?php foreach ($data['Stunde'] as $row):?>
              <?php if(str_replace("'","",Session::get('Stunde'))!=$row['Stunde']):?>
                <option value="'<?=$row['Stunde']?>'"><?= (strlen($row['Stunde'])==1) ? '0'.$row['Stunde'] : $row['Stunde'] ;?>:00</option>
@@ -81,7 +81,7 @@
       </tr>
       <tr>
         <td>Ganzer Tag:</td>
-        <td><input type="checkbox"></td>
+        <td><input type = "checkbox" id = "checkbox_tag" onchange = "change_tag(this)" value = "foo"></td>
       </tr>
     </table>
     <h4>FILLRATE</h4>
@@ -98,10 +98,10 @@
               $(document).ready(function(){
                 var colors = ['#0b62a4', '#7A92A3', '#4da74d'];
                 var random_color = colors["<?=$key?>"];
-                var prozent = "<?= $value['AdCounts']/$value['Impressions']?>";
-                console.log(prozent);
+                var prozent = "<?= $value['AdCounts']/$value['Impressions'];?>";
+                // console.log(prozent);
                 $("#circle<?=$key?>").circliful({
-                  animationStep:5,foregroundColor:random_color,backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.ceil(prozent*100) 
+                  animationStep:5,foregroundColor:random_color,backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.round(prozent*100)
                 });
               });
             </script>
@@ -109,7 +109,8 @@
         <?php endforeach;?>
         <td><div class="chartboxbig">
             <h5>OVERALL FILLED IMPRESSION</h5>
-            <div class="circleoverall" id="circleoverall1"></div>
+            <!-- <div class="circleoverall" id="circleoverall1"></div> -->
+            <div id="donut-ofi"></div>
             <hr>
             <h5>5.123.234 | 650.234</h5>
           </div></td>
@@ -126,8 +127,6 @@
     </table>
   </div>
 
-  <div id="area-kampagne"></div>
-
   <div id="spalte2">
     <hr>
     <h4>DETAIL</h4>
@@ -135,12 +134,20 @@
 
      <table>
       <tr>
-      <td><div class="chartboxbig linecharts">
-      <h5>Compare 27.06.2016</h5>
-      <div class="" id="line1"></div>
-      <hr>
-      <h5>5.123.234 | 650.234</h5>
-    </div></td>
+      <td>
+        <div class="chartboxbig linecharts">
+          <h5>Compare <?=Session::get('Datum')?></h5>
+          <?=Session::get('Kampagne')?>
+          <div id="area-kampagne"></div>
+          <div class="" id="line1"></div>
+          <hr>
+          <!-- <h5>5.123.234 | 650.234</h5> -->
+          <p><a href="<?=DIR?>kampagne/remove_Kampagne">Alle Kampagne vergleichen</a></p>
+          <?php foreach ($data["datas"] as $key => $value):?>
+            <p><input type="checkbox" id="checkbox-compare"><a href="<?=DIR?>kampagne/set_Kampagne/<?=$value['Kampagne']?>"><?=$value['Kampagne']?></a></p>
+          <?php endforeach;?>
+        </div>
+      </td>
     <td>
     <div class="chartboxbig linecharts">
       <h5>Durchschnitt</h5>
@@ -157,6 +164,7 @@
 </div>
 </div>
 
+
 <!-- <script>$(document).ready(function(){$("#circle2").circliful({animationStep:5,foregroundColor:'#ff6600',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.floor((Math.random()*100)+1),});});</script> -->
 <!-- <script>$(document).ready(function(){$("#circle3").circliful({animationStep:5,foregroundColor:'#96cd00',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.floor((Math.random()*100)+1),});});</script> -->
 <!-- <script>$(document).ready(function(){$("#circle4").circliful({animationStep:5,foregroundColor:'#9744de',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.floor((Math.random()*100)+1),});});</script> -->
@@ -166,7 +174,7 @@
 
 <script type="text/javascript">
 $('#select_datum').on('change', function() {
-  console.log("selectdatum : "+$(this).val());
+  // console.log("selectdatum : "+$(this).val());
   var selected = $(this).val();
   if(selected=='all'){
     window.location = "<?= DIR ?>kampagne/remove_date";
@@ -175,7 +183,7 @@ $('#select_datum').on('change', function() {
   }
 });
 $('#select_stunde').on('change', function() {
-  console.log("selectstunde : "+$(this).val());
+  // console.log("selectstunde : "+$(this).val());
   var selected = $(this).val();
   if(selected=='all'){
     window.location = "<?= DIR ?>kampagne/remove_stunde";
@@ -185,9 +193,8 @@ $('#select_stunde').on('change', function() {
 });
 </script>
 
-<script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-<!-- <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script> -->
-<script src="http://cdn.oesmith.co.uk/morris-0.4.1.min.js"></script>
+<script type="text/javascript" src="<?= URL::SCRIPTS('raphael.min') ?>"></script>
+<script type="text/javascript" src="<?= URL::SCRIPTS('morris') ?>"></script>
 
 <script type="text/javascript">
 $.ajax({    //create an ajax request to load_page.php
@@ -203,7 +210,35 @@ $.ajax({    //create an ajax request to load_page.php
           ykeys: ['a', 'b', 'c'],
           labels: ['Kampagne 1', 'Kampagne 2', 'Kampagne 3']
         });
-        console.log("success");
+        //console.log("success");
+        console.log(response);
     }
 });
+</script>
+
+<script type="text/javascript">
+function change_tag(id){
+  var selected = id.checked;
+  if(selected==true) {
+    console.log(selected);
+  }else{
+    console.log(selected);
+  }
+}
+
+</script>
+
+<script type="text/javascript">
+$.ajax({    //create an ajax request to load_page.php
+    type: "GET",
+    url: "<?=DIR?>kampagne/getOverllFilledImpression",
+    async: false,
+    dataType: "json",   //expect html to be returned
+    success: function(response){
+      Morris.Donut({
+      element: 'donut-ofi',
+      data: response
+      });
+    }
+  })
 </script>
