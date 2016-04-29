@@ -64,7 +64,7 @@ class Kampagne extends Controller {
      $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1 AND $clause2",null,null);
      $array = [];
      for ($i=0; $i < 24 ; $i++) {
-       $array[] = array('y'=>"$i");
+       $array[] = array('hour'=>"$i");
      }
 
      $name = null;
@@ -77,7 +77,7 @@ class Kampagne extends Controller {
          $value['Kampagne'] = 'c';
        }
        $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
-       if ($array[$value['Stunde']]['y'] == $value['Stunde']) {
+       if ($array[$value['Stunde']]['hour'] == $value['Stunde']) {
         //  if (Session::get('Kampagne')) {
            $array[$value['Stunde']][$value['Kampagne']] = $diff;
         //  }else{

@@ -36,35 +36,7 @@
       </tr>
       <tr>
         <td>Stunde:</td>
-        <!-- <td><form>
-            <select>
-              <option>00:00</option>
-              <option>01:00</option>
-              <option>02:00</option>
-              <option>03:00</option>
-              <option>04:00</option>
-              <option>05:00</option>
-              <option>06:00</option>
-              <option>07:00</option>
-              <option>08:00</option>
-              <option>09:00</option>
-              <option>10:00</option>
-              <option>11:00</option>
-              <option>12:00</option>
-              <option>13:00</option>
-              <option>14:00</option>
-              <option selected>15:00</option>
-              <option>16:00</option>
-              <option>17:00</option>
-              <option>18:00</option>
-              <option>19:00</option>
-              <option>20:00</option>
-              <option>21:00</option>
-              <option>22:00</option>
-              <option>23:00</option>
-            </select>
-          </form>
-        </td> -->
+
         <td>
           <select name="select_stunde" id="select_stunde">
            <?php if(Session::get('Stunde')):?>
@@ -138,12 +110,12 @@
         <div class="chartboxbig linecharts">
           <h5>Compare <?=Session::get('Datum')?></h5>
           <?=Session::get('Kampagne')?>
-          <div id="area-kampagne"></div>
-          <!-- <div class="" id="line1"></div> -->
-          <hr>
-          <!-- <h5>5.123.234 | 650.234</h5> -->
-          <!-- <p><a href="<?=DIR?>kampagne/remove_Kampagne">Alle Kampagne vergleichen</a></p> -->
-          <div style="text-align:left">
+          <div style="text-align:left;margin-left:20px;">
+            <div id="area-kampagne"></div>
+            <!-- <div class="" id="line1"></div> -->
+            <hr>
+            <!-- <h5>5.123.234 | 650.234</h5> -->
+            <!-- <p><a href="<?=DIR?>kampagne/remove_Kampagne">Alle Kampagne vergleichen</a></p> -->
             <?php foreach ($data["datas"] as $key => $value):?>
               <!-- <p><input type="checkbox" id="checkbox-compare"><a href="<?=DIR?>kampagne/set_Kampagne/<?=$value['Kampagne']?>"><?=$value['Kampagne']?></a></p> -->
               <p><input type="checkbox" id="checkbox-compare"> <?=$value['Kampagne']?></p>
@@ -209,12 +181,13 @@ $.ajax({    //create an ajax request to load_page.php
         Morris.Line({
           element: 'area-kampagne',
           data: response,
-          xkey: 'y',
+          xkey: 'hour',
           ykeys: ['a', 'b', 'c'],
-          labels: ['Kampagne 1', 'Kampagne 2', 'Kampagne 3']
+          labels: ['Kampagne 1', 'Kampagne 2', 'Kampagne 3'],
+          parseTime: false
         });
         //console.log("success");
-        console.log(response);
+        // console.log(response);
     }
 });
 </script>
