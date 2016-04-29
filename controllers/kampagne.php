@@ -78,19 +78,19 @@ class Kampagne extends Controller {
        }
        $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
        if ($array[$value['Stunde']]['y'] == $value['Stunde']) {
-         if (Session::get('Kampagne')) {
+        //  if (Session::get('Kampagne')) {
            $array[$value['Stunde']][$value['Kampagne']] = $diff;
-         }else{
-           if ($value['Kampagne']=='a') {
-            $array[$value['Stunde']]['a'] = $diff;
-           }
-           if ($value['Kampagne']=='b') {
-            $array[$value['Stunde']]['b'] = $diff - $array[$value['Stunde']]['a'];
-           }
-           if ($value['Kampagne']=='c') {
-            $array[$value['Stunde']]['c'] = $diff - $array[$value['Stunde']]['a'] - $array[$value['Stunde']]['b'];
-           }
-         }
+        //  }else{
+        //    if ($value['Kampagne']=='a') {
+        //     $array[$value['Stunde']]['a'] = $diff;
+        //    }
+        //    if ($value['Kampagne']=='b') {
+        //     $array[$value['Stunde']]['b'] = $diff - $array[$value['Stunde']]['a'];
+        //    }
+        //    if ($value['Kampagne']=='c') {
+        //     $array[$value['Stunde']]['c'] = $diff - $array[$value['Stunde']]['a'] - $array[$value['Stunde']]['b'];
+        //    }
+        //  }
        }
        $name = $value['Kampagne'];
      }

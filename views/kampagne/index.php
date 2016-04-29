@@ -139,13 +139,16 @@
           <h5>Compare <?=Session::get('Datum')?></h5>
           <?=Session::get('Kampagne')?>
           <div id="area-kampagne"></div>
-          <div class="" id="line1"></div>
+          <!-- <div class="" id="line1"></div> -->
           <hr>
           <!-- <h5>5.123.234 | 650.234</h5> -->
-          <p><a href="<?=DIR?>kampagne/remove_Kampagne">Alle Kampagne vergleichen</a></p>
-          <?php foreach ($data["datas"] as $key => $value):?>
-            <p><input type="checkbox" id="checkbox-compare"><a href="<?=DIR?>kampagne/set_Kampagne/<?=$value['Kampagne']?>"><?=$value['Kampagne']?></a></p>
-          <?php endforeach;?>
+          <!-- <p><a href="<?=DIR?>kampagne/remove_Kampagne">Alle Kampagne vergleichen</a></p> -->
+          <div style="text-align:left">
+            <?php foreach ($data["datas"] as $key => $value):?>
+              <!-- <p><input type="checkbox" id="checkbox-compare"><a href="<?=DIR?>kampagne/set_Kampagne/<?=$value['Kampagne']?>"><?=$value['Kampagne']?></a></p> -->
+              <p><input type="checkbox" id="checkbox-compare"> <?=$value['Kampagne']?></p>
+            <?php endforeach;?>
+          </div>
         </div>
       </td>
     <td>
@@ -203,7 +206,7 @@ $.ajax({    //create an ajax request to load_page.php
     async: false,
     dataType: "json",   //expect html to be returned
     success: function(response){
-        Morris.Area({
+        Morris.Line({
           element: 'area-kampagne',
           data: response,
           xkey: 'y',
