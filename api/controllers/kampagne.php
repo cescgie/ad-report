@@ -249,5 +249,11 @@ class Kampagne extends Controller {
     URL::STAYCURRENTPAGE();
  }
 
+  public function getDatum(){
+    $groupby = "GROUP BY Datum";
+    $data["datas"] = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum",null,$groupby,null);
+
+    return print_r(json_encode($data["datas"]));
+  }
 }
 ?>
