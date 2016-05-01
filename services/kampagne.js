@@ -9,6 +9,12 @@ angular.module('MyApp')
       },
       getDate: function(){
         return $http.get('api/kampagne/getDatum');
+      },
+      getKampagne:function(setParams){
+        return $http.get('api/kampagne/getFillrate?datum='+setParams.datum+'&stunde='+setParams.stunde);
+      },
+      getDetailGraph:function(datum){
+        return $http.get('api/kampagne/getDetailGraph?datum='+datum);
       }
     };
   });

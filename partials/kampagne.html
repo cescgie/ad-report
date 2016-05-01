@@ -21,42 +21,49 @@
           </form>
         </td> -->
         <td>
-          {{ choosenDate }}
-          <select ng-model="choosenDate" ng-options="date.Datum for date in dates">
+          <select id="select_date" ng-model="choosenDate" ng-options="date.Datum for date in dates">
             <option value="">Datum auswählen</option>
           </select>
         </td>
       </tr>
       <tr>
         <td>Stunde:</td>
-        <td><form>
-            <select>
-              <option>00:00</option>
-              <option>01:00</option>
-              <option>02:00</option>
-              <option>03:00</option>
-              <option>04:00</option>
-              <option>05:00</option>
-              <option>06:00</option>
-              <option>07:00</option>
-              <option>08:00</option>
-              <option>09:00</option>
-              <option>10:00</option>
-              <option>11:00</option>
-              <option>12:00</option>
-              <option>13:00</option>
-              <option>14:00</option>
-              <option selected>15:00</option>
-              <option>16:00</option>
-              <option>17:00</option>
-              <option>18:00</option>
-              <option>19:00</option>
-              <option>20:00</option>
-              <option>21:00</option>
-              <option>22:00</option>
-              <option>23:00</option>
+        <td>
+            <select id="select_hour">
+              <option value="null">Stunde auswählen</option>
+              <option value="all">Ganzer Tag</option>
+              <option value="0">00:00</option>
+              <option value="1">01:00</option>
+              <option value="2">02:00</option>
+              <option value="3">03:00</option>
+              <option value="4">04:00</option>
+              <option value="5">05:00</option>
+              <option value="6">06:00</option>
+              <option value="7">07:00</option>
+              <option value="8">08:00</option>
+              <option value="9">09:00</option>
+              <option value="10">10:00</option>
+              <option value="11">11:00</option>
+              <option value="12">12:00</option>
+              <option value="13">13:00</option>
+              <option value="14">14:00</option>
+              <option value="15">15:00</option>
+              <option value="16">16:00</option>
+              <option value="17">17:00</option>
+              <option value="18">18:00</option>
+              <option value="19">19:00</option>
+              <option value="20">20:00</option>
+              <option value="21">21:00</option>
+              <option value="22">22:00</option>
+              <option value="23">23:00</option>
             </select>
-          </form></td>
+          </td>
+          <!--<td>
+            {{ availableHour }}
+            <select ng-model="availableHour" ng-options="hour.Hour for hour in hours">
+              <option value="">Stunde auswählen</option>
+            </select>
+          </td>-->
       </tr>
       <tr>
         <td>Ganzer Tag:</td>
@@ -66,30 +73,14 @@
     <h4>FILLRATE</h4>
     <table>
       <tr class="graphics">
-        <td><div class="chartboxsmall">
-            <h5>11234_NERO...</h5>
-            <div id="circle1"> </div>
+        <td data-ng-repeat="kampagne in kampagnes">
+          <div class="chartboxsmall" >
+            <h5>{{kampagne.Kampagne | limitTo:15 }}{{ kampagne.Kampagne.length > 20 ? '...' : '' }}</h5>
+            <div id="circle1">{{kampagne.percent}}%</div>
             <hr>
-            <h5>12345 | 123</h5>
-          </div></td>
-        <td><div class="chartboxsmall">
-            <h5>11223_TEADS...</h5>
-            <div id="circle2"></div>
-            <hr>
-            <h5>12345 | 123</h5>
-          </div></td>
-        <td><div class="chartboxsmall">
-            <h5>11234_SPOTX...</h5>
-            <div id="circle3"></div>
-            <hr>
-            <h5>12345 | 123</h5>
-          </div></td>
-        <td><div class="chartboxsmall">
-            <h5>11234_SMARTCLIP...</h5>
-            <div id="circle4"></div>
-            <hr>
-            <h5>12345 | 123</h5>
-          </div></td>
+            <h5>{{kampagne.Impressions}} | {{kampagne.AdCounts}}</h5>
+          </div>
+        </td>
         <td><div class="chartboxbig">
             <h5>OVERALL FILLED IMPRESSION</h5>
             <div class="circleoverall" id="circleoverall1"></div>
@@ -111,16 +102,20 @@
   <div id="spalte2">
     <hr>
     <h4>DETAIL</h4>
-
+    <button ng-click="showDetailGraph()">Aktualisieren</button>
 
      <table>
       <tr>
       <td><div class="chartboxbig linecharts">
-      <h5>Compare 27.06.2016</h5>
+      <h5>Compare {{datas.datum}}</h5>
+      <div id="area-kampagne"></div>
       <div class="" id="line1"></div>
       <hr>
-      <h5>5.123.234 | 650.234</h5>
-    </div></td>
+      <div data-ng-repeat="kampagne in kampagnes">
+         <input type="checkbox">{{kampagne.Kampagne}}</input>
+      </div>
+    </div>
+  </td>
     <td>
     <div class="chartboxbig linecharts">
       <h5>Durchschnitt</h5>
@@ -135,13 +130,35 @@
 
 </div>
 </div>
-<script src="vendor/jquery.circliful.min.js"></script>
-<script src="vendor/raphael-min.js"></script>
-<script src="vendor/morris.js"></script>
 
-<script>$(document).ready(function(){$("#circle1").circliful({animationStep:5,foregroundColor:'#19c6f5',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.floor((Math.random()*100)+1),});});</script>
+<script>$(document).ready(function(){
+  $("#circle1").circliful({
+    animationStep:5,
+    foregroundColor:'#19c6f5',
+    backgroundColor:'#eceaeb',
+    fontColor:'#2A3440',
+    foregroundBorderWidth:35,
+    backgroundBorderWidth:35,
+    percent:Math.floor((Math.random()*100)+1),
+    });
+  });
+</script>
 <script>$(document).ready(function(){$("#circle2").circliful({animationStep:5,foregroundColor:'#ff6600',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.floor((Math.random()*100)+1),});});</script>
 <script>$(document).ready(function(){$("#circle3").circliful({animationStep:5,foregroundColor:'#96cd00',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.floor((Math.random()*100)+1),});});</script>
 <script>$(document).ready(function(){$("#circle4").circliful({animationStep:5,foregroundColor:'#9744de',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.floor((Math.random()*100)+1),});});</script>
 <script>$(document).ready(function(){$("#circleoverall1").circliful({animationStep:5,foregroundColor:'#0014d7',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,pointSize:100,percent:Math.floor((Math.random()*100)+1),});});</script>
 <script>$(document).ready(function(){$("#circleoverall2").circliful({animationStep:5,foregroundColor:'#d70000',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,pointSize:100,percent:Math.floor((Math.random()*100)+1),});});</script>
+
+<script type="text/javascript">
+  $('#select_date').on('change', function() {
+     $('#select_hour').val(null);
+  });
+
+  $('#select_hour').on('change', function() {
+  var selected = $(this).val();
+
+    if(selected!="null"){
+      angular.element($("#select_hour")).scope().setHour(selected);
+    }
+  });
+</script>

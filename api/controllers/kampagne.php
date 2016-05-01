@@ -131,10 +131,10 @@ class Kampagne extends Controller {
       require_once "static/PHPExcel/Classes/PHPExcel.php";
       require_once "static/PHPExcel/Classes/PHPExcel/IOFactory.php";
 
-      $data["Kampagne"] = '12228_2_NERO_In-Read_2016_31.12.2016';
+      $data["Kampagne"] = '12250_2_SpotXchange_Bewegtbild_Content-Split_31.12.2016';
 
 
-      $inputFileName = getcwd().'/files/12228_2_NERO_In-Read_2016_31.12.2016.xls';
+      $inputFileName = getcwd().'/files/12250_2_SpotXchange_Bewegtbild_Content-Split_31.12.2016.xls';
 
       //  Read your Excel workbook
       try {
@@ -255,5 +255,71 @@ class Kampagne extends Controller {
 
     return print_r(json_encode($data["datas"]));
   }
+
+  public function getFillrate(){
+    $datum = $_GET["datum"];
+    $stunde = $_GET["stunde"];
+    $clause1 = "Datum = '$datum' ";
+    if ($stunde == "null") {
+      $select = "Datum,Kampagne,SUM(Impressions) as Impressions,SUM(AdCounts) as AdCounts";
+      $clause2 = "Stunde != '' ";
+      $groupby = "GROUP BY Datum,Kampagne";
+    }else{
+      $select = "*";
+      $clause2 = "Stunde = '$stunde' ";
+    }
+
+    $data["datas"] = $this->_model->selectClauseGroupByOrderBy("kampagne",$select,"WHERE $clause1 AND $clause2",$groupby,null);
+
+    return print_r(json_encode($data["datas"]));
+  }
+
+  public function getDetailGraph(){
+    $datum = $_GET["datum"];
+    $stunde = $_GET["stunde"];
+    $clause1 = "Datum = '$datum' ";
+
+    /*if(Session::get('Kampagne')){
+      $kampagne = Session::get('Kampagne');
+      $clause2 = "Kampagne = '$kampagne'";
+    }else{
+      $clause2 = "Kampagne != '' ";
+    }*/
+
+     $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1",null,null);
+     $array = [];
+     for ($i=0; $i < 24 ; $i++) {
+       $array[] = array('hour'=>"$i");
+     }
+
+     $name = null;
+     foreach ($data["graphs"] as $key => $value) {
+       if (strpos($value['Kampagne'], '12250') !== false) {
+         $value['Kampagne'] = 'a';
+       }elseif (strpos($value['Kampagne'], '12169') !== false) {
+         $value['Kampagne'] = 'b';
+       }else {
+         $value['Kampagne'] = 'c';
+       }
+       $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
+       if ($array[$value['Stunde']]['hour'] == $value['Stunde']) {
+        //  if (Session::get('Kampagne')) {
+           $array[$value['Stunde']][$value['Kampagne']] = $diff;
+        //  }else{
+        //    if ($value['Kampagne']=='a') {
+        //     $array[$value['Stunde']]['a'] = $diff;
+        //    }
+        //    if ($value['Kampagne']=='b') {
+        //     $array[$value['Stunde']]['b'] = $diff - $array[$value['Stunde']]['a'];
+        //    }
+        //    if ($value['Kampagne']=='c') {
+        //     $array[$value['Stunde']]['c'] = $diff - $array[$value['Stunde']]['a'] - $array[$value['Stunde']]['b'];
+        //    }
+        //  }
+       }
+       $name = $value['Kampagne'];
+     }
+     return print_r(json_encode($array));
+   }
 }
 ?>
