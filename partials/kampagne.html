@@ -65,12 +65,12 @@
             </select>
           </td>-->
       </tr>
-      <tr>
+      <!-- <tr>
         <td>Ganzer Tag:</td>
         <td><input type="checkbox"></td>
-      </tr>
+      </tr> -->
     </table>
-    <h4>FILLRATE {{choosenDate.Datum}} {{choosenDate.Stunde}}</h4>
+    <h4>FILLRATE ( {{choosenDate.Datum}}{{choosenDate.Stunde}} )</h4>
     <table>
       <tr class="graphics">
         <td data-ng-repeat="kampagne in kampagnes">
@@ -104,8 +104,6 @@
   <div id="spalte2">
     <hr>
     <h4>DETAIL</h4>
-    <button ng-click="showDetailGraph()">Aktualisieren</button>
-
      <table>
       <tr>
       <td><div class="chartboxbig linecharts">
@@ -113,8 +111,10 @@
       <div id="area-kampagne"></div>
       <div class="" id="line1"></div>
       <hr>
-      <div data-ng-repeat="kampagne in kampagnes" style="text-align:left;margin-left:20px;">
-         <input type="checkbox">{{kampagne.Kampagne}}</input>
+      <div style="text-align:left;margin-left:20px;">
+        <div data-ng-repeat="kampagne in kampagnes">
+           <input type="checkbox" ng-checked="checkedKampagne.indexOf(kampagne.Kampagne) != -1" ng-click="toggleCheck(kampagne.Kampagne)"/>{{kampagne.Kampagne}}
+        </div>
       </div>
     </div>
   </td>

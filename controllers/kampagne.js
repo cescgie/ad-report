@@ -25,7 +25,7 @@ angular.module('MyApp')
       if (h_reform.length == 1) {
         h_reform = '0'+h_reform;
       }
-      $scope.choosenDate.Stunde = 'um '+h_reform+':00';
+      $scope.choosenDate.Stunde = ' um '+h_reform+':00';
     }
 
 		Kampagne.getKampagne($scope.setparams).then(function(response){
@@ -41,21 +41,23 @@ angular.module('MyApp')
 
 	};
 
-	$scope.showDetailGraph = function(){
+	$scope.showDetailGraph = function(alpha){
 		var date = $scope.choosenDate.Datum;
-		$scope.datas.datum = date;
-		$('#area-kampagne').empty();
-		Kampagne.getDetailGraph(date).then(function(response){
-			$scope.detailkampagnes = response.data;
-			Morris.Line({
-	          element: 'area-kampagne',
-	          data: response.data,
-	          xkey: 'hour',
-	          ykeys: ['a', 'b', 'c'],
-	          labels: ['Kampagne 1', 'Kampagne 2', 'Kampagne 3'],
-	          parseTime: false
-        	});
-		});
+    $scope.datas.datum = date;
+    $('#area-kampagne').empty();
+    if (alpha.length>0) {
+      Kampagne.getDetailGraph(date).then(function(response){
+  			$scope.detailkampagnes = response.data;
+  			Morris.Line({
+  	          element: 'area-kampagne',
+  	          data: response.data,
+  	          xkey: 'hour',
+  	          ykeys: alpha,
+  	          labels: alpha,
+  	          parseTime: false
+          	});
+  		});
+    }
 	};
 
   function init(){
@@ -65,5 +67,15 @@ angular.module('MyApp')
   }
 
   init();
+
+  $scope.checkedKampagne = [];
+  $scope.toggleCheck = function (kampagne) {
+        if ($scope.checkedKampagne.indexOf(kampagne) === -1) {
+            $scope.checkedKampagne.push(kampagne);
+        } else {
+            $scope.checkedKampagne.splice($scope.checkedKampagne.indexOf(kampagne), 1);
+        }
+        $scope.showDetailGraph($scope.checkedKampagne);
+  };
 
 });
