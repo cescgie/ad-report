@@ -133,7 +133,6 @@ class Kampagne extends Controller {
 
       $data["Kampagne"] = '12250_2_SpotXchange_Bewegtbild_Content-Split_31.12.2016';
 
-
       $inputFileName = getcwd().'/files/12250_2_SpotXchange_Bewegtbild_Content-Split_31.12.2016.xls';
 
       //  Read your Excel workbook
@@ -276,7 +275,6 @@ class Kampagne extends Controller {
 
   public function getDetailGraph(){
      $datum = $_GET["datum"];
-     $stunde = $_GET["stunde"];
      $clause1 = "Datum = '$datum' ";
 
      $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1",null,null);
@@ -293,6 +291,26 @@ class Kampagne extends Controller {
        }
        $name = $value['Kampagne'];
      }
+     return print_r(json_encode($array));
+   }
+
+   public function getOverallFilledImpression(){
+     $datum = $_GET["datum"];
+     $clause1 = "Datum = '$datum' ";
+
+     $select = "Kampagne as label,SUM(Impressions) as Impressions, SUM(AdCounts) as AdCounts";
+     $groupby = "GROUP By Datum,Kampagne";
+
+     $data["doghnutOFI"] = $this->_model->selectClauseGroupByOrderBy("kampagne",$select,"WHERE $clause1",$groupby,null);
+
+     $array = [];
+     foreach ($data["doghnutOFI"] as $key => $value) {
+       $total_impressions = $value['Impressions'];
+       $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
+       $array[$key]['label'] = $value['label'];
+       $array[$key]['value'] = $diff;
+     }
+
      return print_r(json_encode($array));
    }
 }

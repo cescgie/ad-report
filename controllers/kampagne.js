@@ -6,6 +6,13 @@ angular.module('MyApp')
 
     $scope.datas = {};
 
+  $scope.setDate = function(d){
+    $scope.choosenDate.Datum = d;
+  }
+
+  $scope.getDate = function(){
+    return $scope.choosenDate;
+  }
 
 	$scope.setHour = function(h){
 		var date = $scope.choosenDate.Datum;
@@ -47,7 +54,6 @@ angular.module('MyApp')
     $('#area-kampagne').empty();
     if (alpha.length>0) {
       Kampagne.getDetailGraph(date).then(function(response){
-  			$scope.detailkampagnes = response.data;
   			Morris.Line({
   	          element: 'area-kampagne',
   	          data: response.data,
@@ -64,18 +70,31 @@ angular.module('MyApp')
     $scope.choosenDate = {"Datum":"2016-04-20"};
     $scope.choosenDate.Stunde = 'all';
     $scope.setHour($scope.choosenDate.Stunde);
+    $scope.setOverFilledImpressions();
   }
-
-  init();
 
   $scope.checkedKampagne = [];
   $scope.toggleCheck = function (kampagne) {
-        if ($scope.checkedKampagne.indexOf(kampagne) === -1) {
-            $scope.checkedKampagne.push(kampagne);
-        } else {
-            $scope.checkedKampagne.splice($scope.checkedKampagne.indexOf(kampagne), 1);
-        }
-        $scope.showDetailGraph($scope.checkedKampagne);
+    if ($scope.checkedKampagne.indexOf(kampagne) === -1) {
+        $scope.checkedKampagne.push(kampagne);
+    } else {
+        $scope.checkedKampagne.splice($scope.checkedKampagne.indexOf(kampagne), 1);
+    }
+    $scope.showDetailGraph($scope.checkedKampagne);
   };
+
+  $scope.setOverFilledImpressions = function (){
+    var date = $scope.choosenDate.Datum;
+    $('#donut-ofi').empty();
+    Kampagne.getOFI(date).then(function(response){
+      $('#donut-ofi').empty();
+      Morris.Donut({
+        element: 'donut-ofi',
+        data: response.data
+      });
+    });
+  }
+
+  init();
 
 });
