@@ -3,9 +3,9 @@ angular.module('MyApp')
     Kampagne.getDate().then(function(response){
       $scope.dates = response.data;
     });
-    $scope.choosenDate = {"Datum":"2016-04-20"};
 
     $scope.datas = {};
+
 
 	$scope.setHour = function(h){
 		var date = $scope.choosenDate.Datum;
@@ -14,10 +14,20 @@ angular.module('MyApp')
 		$scope.setparams.stunde = h;
 		$scope.setparams.datum = date;
 
-		if (h== "all") {
+    var h_reform = h;
+
+  	if (h== "all") {
+      //Ganzer Tag
 			$scope.setparams.stunde = null;
-		    console.log("Ganzer Tag");
-		}
+      $scope.choosenDate.Stunde = '';
+		}else{
+      // Nach Stunde
+      if (h_reform.length == 1) {
+        h_reform = '0'+h_reform;
+      }
+      $scope.choosenDate.Stunde = 'um '+h_reform+':00';
+    }
+
 		Kampagne.getKampagne($scope.setparams).then(function(response){
 			var response_data = response.data;
 			var percent = JSON.stringify(response.data);
@@ -25,10 +35,7 @@ angular.module('MyApp')
 				var index = i+1;
 				response_data[i].circle = index;
 				response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
-				$scope.percentage = {};
-			   	$scope.percentage.percent = response_data[i].percent;
 			};
-
 			$scope.kampagnes = response_data;
 		});
 
@@ -51,4 +58,12 @@ angular.module('MyApp')
 		});
 	};
 
-  });
+  function init(){
+    $scope.choosenDate = {"Datum":"2016-04-20"};
+    $scope.choosenDate.Stunde = 'all';
+    $scope.setHour($scope.choosenDate.Stunde);
+  }
+
+  init();
+
+});

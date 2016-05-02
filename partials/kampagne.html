@@ -70,13 +70,15 @@
         <td><input type="checkbox"></td>
       </tr>
     </table>
-    <h4>FILLRATE</h4>
+    <h4>FILLRATE {{choosenDate.Datum}} {{choosenDate.Stunde}}</h4>
     <table>
       <tr class="graphics">
         <td data-ng-repeat="kampagne in kampagnes">
           <div class="chartboxsmall" >
             <h5>{{kampagne.Kampagne | limitTo:15 }}{{ kampagne.Kampagne.length > 20 ? '...' : '' }}</h5>
-            <div id="circle1">{{kampagne.percent}}%</div>
+            <div>
+              <Circful value="kampagne.percent">
+            </div>
             <hr>
             <h5>{{kampagne.Impressions}} | {{kampagne.AdCounts}}</h5>
           </div>
@@ -111,7 +113,7 @@
       <div id="area-kampagne"></div>
       <div class="" id="line1"></div>
       <hr>
-      <div data-ng-repeat="kampagne in kampagnes">
+      <div data-ng-repeat="kampagne in kampagnes" style="text-align:left;margin-left:20px;">
          <input type="checkbox">{{kampagne.Kampagne}}</input>
       </div>
     </div>
