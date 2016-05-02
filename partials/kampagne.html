@@ -21,7 +21,7 @@
           </form>
         </td> -->
         <td>
-          <select id="select_date" ng-model="choosenDate" ng-options="date.Datum for date in dates">
+          <select id="select_date" ng-model="choosenDate" ng-options="date.Datum for date in dates" ng-change="changeSelectedDate()">
             <option value="">Datum auswählen</option>
           </select>
         </td>
@@ -85,7 +85,7 @@
         </td>
         <td><div class="chartboxbig">
             <h5>OVERALL FILLED IMPRESSION</h5>
-            <p><a href="javascript:void(0)" ng-click="setOverFilledImpressions()">{{choosenDate.Datum}}</a></p>
+            <p>{{choosenDate.Datum}}</p>
             <span>(in percent)</span>
             <!-- <div class="circleoverall" id="circleoverall1"></div> -->
             <div id="donut-ofi" style="width:350px"></div>

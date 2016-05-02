@@ -6,14 +6,6 @@ angular.module('MyApp')
 
     $scope.datas = {};
 
-  $scope.setDate = function(d){
-    $scope.choosenDate.Datum = d;
-  }
-
-  $scope.getDate = function(){
-    return $scope.choosenDate;
-  }
-
 	$scope.setHour = function(h){
 		var date = $scope.choosenDate.Datum;
 
@@ -70,7 +62,7 @@ angular.module('MyApp')
     $scope.choosenDate = {"Datum":"2016-04-20"};
     $scope.choosenDate.Stunde = 'all';
     $scope.setHour($scope.choosenDate.Stunde);
-    $scope.setOverFilledImpressions();
+    $scope.setOverFilledImpressions($scope.choosenDate.Datum);
   }
 
   $scope.checkedKampagne = [];
@@ -83,8 +75,11 @@ angular.module('MyApp')
     $scope.showDetailGraph($scope.checkedKampagne);
   };
 
-  $scope.setOverFilledImpressions = function (){
-    var date = $scope.choosenDate.Datum;
+  $scope.changeSelectedDate = function(){
+    $scope.setOverFilledImpressions($scope.choosenDate.Datum);
+  }
+
+  $scope.setOverFilledImpressions = function (date){
     $('#donut-ofi').empty();
     Kampagne.getOFI(date).then(function(response){
       $('#donut-ofi').empty();
