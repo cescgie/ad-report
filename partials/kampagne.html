@@ -74,8 +74,8 @@
     <table>
       <tr class="graphics">
         <td data-ng-repeat="kampagne in kampagnes">
-          <div class="chartboxsmall" >
-            <h5>{{kampagne.Kampagne | limitTo:15 }}{{ kampagne.Kampagne.length > 20 ? '...' : '' }}</h5>
+          <div class="chartboxsmall">
+            <h5>{{kampagne.Kampagne | limitTo:14 }}{{ kampagne.Kampagne.length > 20 ? '...' : '' }}</h5>
             <div>
               <Circful value="kampagne.percent">
             </div>
@@ -92,12 +92,17 @@
             <hr>
             <!-- <h5>5.123.234 | 650.234</h5> -->
           </div></td>
-        <td><div class="chartboxbig">
+          <td data-ng-repeat="ovifillrate in ovifillrates">
+          <div class="chartboxbig">
             <h5>OVERALL FILLRATE</h5>
-            <div class="circleoverall" id="circleoverall2"></div>
+            <div class="circleoverall">
+              <Circful value="ovifillrate.percent">
+            </div>
+            <!-- <div class="circleoverall" id="circleoverall2"></div> -->
             <hr>
-            <h5>5.123.234 | 650.234</h5>
-          </div></td>
+            <h5>{{ovifillrate.Impressions}} | {{ovifillrate.AdCounts || 0 }}</h5>
+          </div>
+        </td>
       </tr>
     </table>
     <table>
@@ -157,8 +162,10 @@
 
 <script type="text/javascript">
   $('#select_date').on('change', function() {
-     $('#select_hour').val(null);
-     angular.element($("#select_date")).scope().setOverFilledImpressions();
+     $('#select_hour').val('Ganzer Tag');
+
+     angular.element($("#select_date")).scope().changeSelectedDate();
+     <!-- angular.element($("#select_date")).scope().setOverallFillrate(); -->
   });
 
   $('#select_hour').on('change', function() {

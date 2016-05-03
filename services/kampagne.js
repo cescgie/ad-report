@@ -18,6 +18,9 @@ angular.module('MyApp')
       },
       getOFI:function(datum){
         return $http.get('api/kampagne/getOverallFilledImpression?datum='+datum);
+      },
+      getOverallFillrate:function(datum){
+        return $http.get('api/kampagne/getOverallFillrate?datum='+datum);
       }
     };
   });

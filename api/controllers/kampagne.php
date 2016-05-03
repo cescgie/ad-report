@@ -313,5 +313,15 @@ class Kampagne extends Controller {
 
      return print_r(json_encode($array));
    }
+
+   public function getOverallFillrate(){
+     $datum = $_GET["datum"];
+     $clause1 = "Datum = '$datum' ";
+
+     $select = "Datum, SUM(Impressions) as Impressions ,SUM(AdCounts) as AdCounts";
+     $data["doghnutOFRate"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1",null);
+
+     return print_r(json_encode($data["doghnutOFRate"]));
+   }
 }
 ?>
