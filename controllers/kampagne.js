@@ -1,5 +1,6 @@
 angular.module('MyApp')
   .controller('KampagneCtrl', function($scope, $location, toastr, Kampagne) {
+    $scope.choosenDate = {};
     Kampagne.getDate().then(function(response){
       $scope.dates = response.data;
     });
@@ -31,8 +32,6 @@ angular.module('MyApp')
 			var response_data = response.data;
 			var percent = JSON.stringify(response.data);
 			for (var i = 0; i < response_data.length; i++) {
-				var index = i+1;
-				response_data[i].circle = index;
 				response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
 			};
 			$scope.kampagnes = response_data;
@@ -59,13 +58,6 @@ angular.module('MyApp')
     }
 	};
 
-  function init(){
-    $scope.choosenDate = {"Datum":"2016-04-20"};
-    $scope.choosenDate.Stunde = 'all';
-    $scope.setHour($scope.choosenDate.Stunde);
-    $scope.setOverFilledImpressions($scope.choosenDate.Datum);
-  }
-
   $scope.checkedKampagne = [];
   $scope.toggleCheck = function (kampagne) {
     if ($scope.checkedKampagne.indexOf(kampagne) === -1) {
@@ -73,7 +65,7 @@ angular.module('MyApp')
     } else {
         $scope.checkedKampagne.splice($scope.checkedKampagne.indexOf(kampagne), 1);
     }
-    
+
     $scope.showDetailGraph($scope.checkedKampagne);
   };
 
@@ -90,6 +82,12 @@ angular.module('MyApp')
         data: response.data
       });
     });
+  }
+
+  function init(){
+    $scope.choosenDate = {"Datum":"2016-04-20"};
+    $scope.setHour('all');
+    $scope.setOverFilledImpressions($scope.choosenDate.Datum);
   }
 
   init();

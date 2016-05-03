@@ -250,7 +250,7 @@ class Kampagne extends Controller {
 
   public function getDatum(){
     $groupby = "GROUP BY Datum";
-    $data["datas"] = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum",null,$groupby,null);
+    $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report","Datum",null,$groupby,null);
 
     return print_r(json_encode($data["datas"]));
   }
@@ -268,7 +268,7 @@ class Kampagne extends Controller {
       $clause2 = "Stunde = '$stunde' ";
     }
 
-    $data["datas"] = $this->_model->selectClauseGroupByOrderBy("kampagne",$select,"WHERE $clause1 AND $clause2",$groupby,null);
+    $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1 AND $clause2",$groupby,null);
 
     return print_r(json_encode($data["datas"]));
   }
@@ -277,7 +277,7 @@ class Kampagne extends Controller {
      $datum = $_GET["datum"];
      $clause1 = "Datum = '$datum' ";
 
-     $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1",null,null);
+     $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("ad_report","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1",null,null);
      $array = [];
      for ($i=0; $i < 24 ; $i++) {
        $array[] = array('hour'=>"$i");
@@ -301,7 +301,7 @@ class Kampagne extends Controller {
      $select = "Kampagne as label,SUM(Impressions) as Impressions, SUM(AdCounts) as AdCounts";
      $groupby = "GROUP By Datum,Kampagne";
 
-     $data["doghnutOFI"] = $this->_model->selectClauseGroupByOrderBy("kampagne",$select,"WHERE $clause1",$groupby,null);
+     $data["doghnutOFI"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1",$groupby,null);
 
      $array = [];
      foreach ($data["doghnutOFI"] as $key => $value) {
