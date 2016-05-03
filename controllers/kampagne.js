@@ -81,7 +81,8 @@ angular.module('MyApp')
       $('#donut-ofi').empty();
       Morris.Donut({
         element: 'donut-ofi',
-        data: response.data
+        data: response.data,
+        formatter: function (x, data) { return data.formatted; }
       });
     });
   }

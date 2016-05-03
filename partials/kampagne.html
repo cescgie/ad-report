@@ -83,16 +83,13 @@
             <h5>{{kampagne.Impressions | number : fractionSize}} | {{kampagne.AdCounts | number : fractionSize || 0 }}</h5>
           </div>
         </td>
-        <td><div class="chartboxbig">
+        <td>
+          <div class="chartboxbig">
             <h5>OVERALL FILLED IMPRESSION</h5>
-            <p>{{choosenDate.Datum}}</p>
-            <span>(in percent)</span>
-            <!-- <div class="circleoverall" id="circleoverall1"></div> -->
-            <div id="donut-ofi" style="width:350px"></div>
-            <!-- <hr> -->
-            <!-- <h5>5.123.234 | 650.234</h5> -->
-          </div></td>
-          <td data-ng-repeat="ovifillrate in ovifillrates">
+            <div id="donut-ofi" style="width:300px"></div>
+          </div>
+        </td>
+        <td data-ng-repeat="ovifillrate in ovifillrates">
           <div class="chartboxbig">
             <h5>OVERALL FILLRATE</h5>
             <div class="circleoverall">
@@ -165,7 +162,6 @@
      $('#select_hour').val('Ganzer Tag');
 
      angular.element($("#select_date")).scope().changeSelectedDate();
-     <!-- angular.element($("#select_date")).scope().setOverallFillrate(); -->
   });
 
   $('#select_hour').on('change', function() {

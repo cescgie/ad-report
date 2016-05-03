@@ -308,6 +308,7 @@ class Kampagne extends Controller {
        $total_impressions = $value['Impressions'];
        $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
        $array[$key]['label'] = $value['label'];
+       $array[$key]['formatted'] = $diff.'%';
        $array[$key]['value'] = $diff;
      }
 
