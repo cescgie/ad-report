@@ -89,15 +89,17 @@
             <div id="donut-ofi" style="width:300px"></div>
           </div>
         </td>
-        <td data-ng-repeat="ovifillrate in ovifillrates">
+        <td >
           <div class="chartboxbig">
             <h5>OVERALL FILLRATE</h5>
-            <div class="circleoverall">
-              <Circful value="ovifillrate.percent">
+            <div data-ng-repeat="ovifillrate in ovifillrates">
+              <div class="circleoverall">
+                <Circful value="ovifillrate.percent">
+              </div>
+              <!-- <div class="circleoverall" id="circleoverall2"></div> -->
+              <hr>
+              <h5>{{ovifillrate.Impressions | number : fractionSize }} | {{ovifillrate.AdCounts | number : fractionSize || 0 }}</h5>
             </div>
-            <!-- <div class="circleoverall" id="circleoverall2"></div> -->
-            <hr>
-            <h5>{{ovifillrate.Impressions | number : fractionSize }} | {{ovifillrate.AdCounts | number : fractionSize || 0 }}</h5>
           </div>
         </td>
       </tr>
