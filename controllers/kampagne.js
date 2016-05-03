@@ -44,6 +44,7 @@ angular.module('MyApp')
 		var date = $scope.choosenDate.Datum;
     $scope.datas.datum = date;
     $('#area-kampagne').empty();
+    $('#line-example').hide();
     if (alpha.length>0) {
       Kampagne.getDetailGraph(date).then(function(response){
   			Morris.Line({
@@ -72,6 +73,7 @@ angular.module('MyApp')
     } else {
         $scope.checkedKampagne.splice($scope.checkedKampagne.indexOf(kampagne), 1);
     }
+    
     $scope.showDetailGraph($scope.checkedKampagne);
   };
 

@@ -112,6 +112,7 @@
       <td><div class="chartboxbig linecharts">
       <h5>Compare {{datas.datum}}</h5>
       <div id="area-kampagne"></div>
+      <div id="line-example"></div>
       <div class="" id="line1"></div>
       <hr>
       <div style="text-align:left;margin-left:20px;">
@@ -167,4 +168,40 @@
       angular.element($("#select_hour")).scope().setHour(selected);
     }
   });
+</script>
+
+<script type="text/javascript">
+    Morris.Line({
+      element: 'line-example',
+      data: [
+        { y: '00'},
+        { y: '01'},
+        { y: '02'},
+        { y: '03'},
+        { y: '04'},
+        { y: '05'},
+        { y: '06'},
+        { y: '07'},
+        { y: '08'},
+        { y: '09'},
+        { y: '10'},
+        { y: '11'},
+        { y: '12'},
+        { y: '13'},
+        { y: '14'},
+        { y: '15'},
+        { y: '16'},
+        { y: '17'},
+        { y: '18'},
+        { y: '19'},
+        { y: '20'},
+        { y: '21'},
+        { y: '22'},
+        { y: '23'}
+      ],
+      xkey: 'y',
+      ykeys: ['a', 'b'],
+      labels: ['Kampagne 1', 'Kampagne 2'],
+      parseTime: false
+    });
 </script>
