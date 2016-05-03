@@ -80,7 +80,7 @@
               <Circful value="kampagne.percent">
             </div>
             <hr>
-            <h5>{{kampagne.Impressions}} | {{kampagne.AdCounts || 0 }}</h5>
+            <h5>{{kampagne.Impressions | number : fractionSize}} | {{kampagne.AdCounts | number : fractionSize || 0 }}</h5>
           </div>
         </td>
         <td><div class="chartboxbig">
@@ -89,7 +89,7 @@
             <span>(in percent)</span>
             <!-- <div class="circleoverall" id="circleoverall1"></div> -->
             <div id="donut-ofi" style="width:350px"></div>
-            <hr>
+            <!-- <hr> -->
             <!-- <h5>5.123.234 | 650.234</h5> -->
           </div></td>
           <td data-ng-repeat="ovifillrate in ovifillrates">
@@ -100,7 +100,7 @@
             </div>
             <!-- <div class="circleoverall" id="circleoverall2"></div> -->
             <hr>
-            <h5>{{ovifillrate.Impressions}} | {{ovifillrate.AdCounts || 0 }}</h5>
+            <h5>{{ovifillrate.Impressions | number : fractionSize }} | {{ovifillrate.AdCounts | number : fractionSize || 0 }}</h5>
           </div>
         </td>
       </tr>
