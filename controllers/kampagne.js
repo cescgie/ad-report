@@ -82,6 +82,7 @@ angular.module('MyApp')
     $scope.setHour('all');
     $scope.setOverFilledImpressions($scope.choosenDate.Datum,'all');
     $scope.setOverallFillrate($scope.choosenDate.Datum,'all');
+    $scope.setDetailAverage($scope.choosenDate.Datum);
     $scope.stopSpin();
   }
 
@@ -148,6 +149,24 @@ angular.module('MyApp')
       };
       $scope.ovifillrates = response_data;
     });
+  }
+
+  $scope.setDetailAverage = function(datum){
+    $scope.startSpin();
+		var date = $scope.choosenDate.Datum;
+    $scope.datas.datum = date;
+    Kampagne.getDetailAverage(date).then(function(response){
+      $('#area-kampagne-average').empty();
+        $scope.stopSpin();
+  			Morris.Line({
+  	          element: 'area-kampagne-average',
+  	          data: response.data,
+  	          xkey: 'hour',
+  	          ykeys: ['Average'],
+  	          labels: ['Durchschnitt'],
+  	          parseTime: false
+          	});
+		});
   }
 
   //spinner loader

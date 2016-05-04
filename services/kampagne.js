@@ -15,6 +15,9 @@ angular.module('MyApp')
       },
       getOverallFillrate:function(setParams){
         return $http.get('api/kampagne/getOverallFillrate?datum='+setParams.datum+'&stunde='+setParams.stunde);
+      },
+      getDetailAverage:function(datum){
+        return $http.get('api/kampagne/getDetailAverage?datum='+datum);
       }
     };
   });

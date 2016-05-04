@@ -100,8 +100,8 @@ class Kampagne extends Controller {
       $clause1 = "Datum = '$datum' ";
       if ($stunde == "null") {
         $select = "Datum,Kampagne,SUM(Impressions) as Impressions,SUM(AdCounts) as AdCounts";
-        $clause2 = "Stunde != '' ";
-        $groupby = "GROUP BY Datum,Kampagne";
+        $clause2 = "Stunde > -1";
+        $groupby = "GROUP BY Kampagne";
       }else{
         $select = "*";
         $clause2 = "Stunde = '$stunde' ";
@@ -138,13 +138,13 @@ class Kampagne extends Controller {
        $clause1 = "Datum = '$datum' ";
        $stunde = $_GET["stunde"];
        if ($stunde == "null") {
-         $clause2 = "Stunde != '' ";
+         $clause2 = "Stunde > -1";
        }else{
          $clause2 = "Stunde = '$stunde' ";
        }
 
-       $select = "Datum, Kampagne as label,SUM(Impressions) as Impressions, SUM(AdCounts) as AdCounts";
-       $groupby = "GROUP By Datum,Kampagne";
+       $select = "Kampagne as label,SUM(Impressions) as Impressions, SUM(AdCounts) as AdCounts";
+       $groupby = "GROUP By Kampagne";
 
        $data["doghnutOFI"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1 AND $clause2",$groupby,null);
 
@@ -165,7 +165,7 @@ class Kampagne extends Controller {
        $clause1 = "Datum = '$datum' ";
        $stunde = $_GET["stunde"];
        if ($stunde == "null") {
-         $clause2 = "Stunde != '' ";
+         $clause2 = "Stunde > -1 ";
        }else{
          $clause2 = "Stunde = '$stunde' ";
        }
@@ -175,6 +175,29 @@ class Kampagne extends Controller {
        $data["doghnutOFRate"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1 AND $clause2",null);
 
        return print_r(json_encode($data["doghnutOFRate"]));
+     }
+
+     public function getDetailAverage(){
+       $datum = $_GET["datum"];
+       $clause1 = "Datum = '$datum' ";
+
+       $select = "Datum, Kampagne, Stunde, Impressions, AdCounts";
+
+       $data["detailsAverage"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1",null,null);
+
+       $array = [];
+       for ($i=0; $i < 24 ; $i++) {
+         $array[] = array('hour'=>"$i");
+       }
+
+       foreach ($data["detailsAverage"] as $key => $value) {
+         $average = (int)(($value['AdCounts']/$value['Impressions'])*100+.5)/7;
+         if ($array[$value['Stunde']]['hour'] == $value['Stunde']) {
+            $array[$value['Stunde']]['Average'] = round($array[$value['Stunde']]['Average']+$average);
+         }
+       }
+
+      return print_r(json_encode($array));
      }
 }
 ?>
