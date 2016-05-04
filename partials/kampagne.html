@@ -80,7 +80,7 @@
               <Circful value="kampagne.percent">
             </div>
             <hr>
-            <h5>{{kampagne.Impressions | number : fractionSize}} | {{kampagne.AdCounts | number : fractionSize || 0 }}</h5>
+            <h5>{{kampagne.Impressions | number : fractionSize}} | {{kampagne.AdCounts | number : fractionSize | default : 0 }}</h5>
           </div>
         </td>
         <td>

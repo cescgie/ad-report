@@ -10,7 +10,7 @@ angular.module('MyApp')
       getDetailGraph:function(datum){
         return $http.get('api/kampagne/getDetailGraph?datum='+datum);
       },
-      getOFI:function(datum){
+      getOverallFilledImpression:function(datum){
         return $http.get('api/kampagne/getOverallFilledImpression?datum='+datum);
       },
       getOverallFillrate:function(datum){

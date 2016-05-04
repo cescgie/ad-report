@@ -83,7 +83,7 @@ angular.module('MyApp')
     if (date==null) {
       toastr.error("Datum auswählen");
     }else{
-      Kampagne.getOFI(date).then(function(response){
+      Kampagne.getOverallFilledImpression(date).then(function(response){
         $('#donut-ofi').empty();
         Morris.Donut({
           element: 'donut-ofi',
