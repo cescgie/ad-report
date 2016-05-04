@@ -85,13 +85,15 @@
         </td>
         <td>
           <div class="chartboxbig">
-            <h5>OVERALL FILLED IMPRESSION</h5>
+            <h5><a href="javascript:void(0)" ng-click="setOverFilledImpressions()">OVERALL FILLED IMPRESSION</a></h5>
+            <p>{{setOverFilledImpressionsDate.Datum}}</p>
             <div id="donut-ofi" style="width:300px"></div>
           </div>
         </td>
-        <td >
+        <td>
           <div class="chartboxbig">
-            <h5>OVERALL FILLRATE</h5>
+            <h5><a href="javascript:void(0)" ng-click="setOverallFillrate()">OVERALL FILLRATE</a></h5>
+            <p>{{setOverallFillrateDate.Datum}}</p>
             <div data-ng-repeat="ovifillrate in ovifillrates">
               <div class="circleoverall">
                 <Circful value="ovifillrate.percent">
@@ -140,24 +142,6 @@
 
 </div>
 </div>
-
-<script>$(document).ready(function(){
-  $("#circle1").circliful({
-    animationStep:5,
-    foregroundColor:'#19c6f5',
-    backgroundColor:'#eceaeb',
-    fontColor:'#2A3440',
-    foregroundBorderWidth:35,
-    backgroundBorderWidth:35,
-    percent:Math.floor((Math.random()*100)+1),
-    });
-  });
-</script>
-<script>$(document).ready(function(){$("#circle2").circliful({animationStep:5,foregroundColor:'#ff6600',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.floor((Math.random()*100)+1),});});</script>
-<script>$(document).ready(function(){$("#circle3").circliful({animationStep:5,foregroundColor:'#96cd00',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.floor((Math.random()*100)+1),});});</script>
-<script>$(document).ready(function(){$("#circle4").circliful({animationStep:5,foregroundColor:'#9744de',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,percent:Math.floor((Math.random()*100)+1),});});</script>
-<script>$(document).ready(function(){$("#circleoverall1").circliful({animationStep:5,foregroundColor:'#0014d7',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,pointSize:100,percent:Math.floor((Math.random()*100)+1),});});</script>
-<script>$(document).ready(function(){$("#circleoverall2").circliful({animationStep:5,foregroundColor:'#d70000',backgroundColor:'#eceaeb',fontColor:'#2A3440',foregroundBorderWidth:35,backgroundBorderWidth:35,pointSize:100,percent:Math.floor((Math.random()*100)+1),});});</script>
 
 <script type="text/javascript">
   $('#select_date').on('change', function() {

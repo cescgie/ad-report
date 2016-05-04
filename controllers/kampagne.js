@@ -7,7 +7,7 @@ angular.module('MyApp')
 
     $scope.datas = {};
     $scope.ovifillrates = {};
-    
+
 	$scope.setHour = function(h){
 		var date = $scope.choosenDate.Datum;
 
@@ -71,32 +71,44 @@ angular.module('MyApp')
   };
 
   $scope.changeSelectedDate = function(){
-    $scope.setOverFilledImpressions($scope.choosenDate.Datum);
-    $scope.setOverallFillrate($scope.choosenDate.Datum);
+    //$scope.setOverFilledImpressions($scope.choosenDate.Datum);
+    //$scope.setOverallFillrate($scope.choosenDate.Datum);
     $scope.setHour('all');
   }
 
-  $scope.setOverFilledImpressions = function (date){
+  $scope.setOverFilledImpressions = function (){
+    var date = $scope.choosenDate.Datum;
+    $scope.setOverFilledImpressionsDate = {"Datum":date};
     $('#donut-ofi').empty();
-    Kampagne.getOFI(date).then(function(response){
-      $('#donut-ofi').empty();
-      Morris.Donut({
-        element: 'donut-ofi',
-        data: response.data,
-        formatter: function (x, data) { return data.formatted; }
+    if (date==null) {
+      toastr.error("Datum auswählen");
+    }else{
+      Kampagne.getOFI(date).then(function(response){
+        $('#donut-ofi').empty();
+        Morris.Donut({
+          element: 'donut-ofi',
+          data: response.data,
+          formatter: function (x, data) { return data.formatted; }
+        });
       });
-    });
+    }
   }
 
-  $scope.setOverallFillrate = function (date){
-    Kampagne.getOverallFillrate(date).then(function(response){
-      var response_data = response.data;
-      var percent = JSON.stringify(response.data);
-      for (var i = 0; i < response_data.length; i++) {
-        response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
-      };
-      $scope.ovifillrates = response_data;
-    });
+  $scope.setOverallFillrate = function (){
+    var date = $scope.choosenDate.Datum;
+    $scope.setOverallFillrateDate = {"Datum":date};
+    if (date==null) {
+      toastr.error("Datum auswählen");
+    }else{
+      Kampagne.getOverallFillrate(date).then(function(response){
+        var response_data = response.data;
+        var percent = JSON.stringify(response.data);
+        for (var i = 0; i < response_data.length; i++) {
+          response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
+        };
+        $scope.ovifillrates = response_data;
+      });
+    }
   }
 
   // function init(){
