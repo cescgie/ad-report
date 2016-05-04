@@ -10,11 +10,11 @@ angular.module('MyApp')
       getDetailGraph:function(datum){
         return $http.get('api/kampagne/getDetailGraph?datum='+datum);
       },
-      getOverallFilledImpression:function(datum){
-        return $http.get('api/kampagne/getOverallFilledImpression?datum='+datum);
+      getOverallFilledImpression:function(setParams){
+        return $http.get('api/kampagne/getOverallFilledImpression?datum='+setParams.datum+'&stunde='+setParams.stunde);
       },
-      getOverallFillrate:function(datum){
-        return $http.get('api/kampagne/getOverallFillrate?datum='+datum);
+      getOverallFillrate:function(setParams){
+        return $http.get('api/kampagne/getOverallFillrate?datum='+setParams.datum+'&stunde='+setParams.stunde);
       }
     };
   });

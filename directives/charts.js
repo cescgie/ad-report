@@ -1,6 +1,6 @@
 var myTemplate = '<div data-text="{{$scope.value}}"></div>';
 var percentage = {};
-var colors = ['#0b62a4', '#b388ff', '#4da74d','#ff6600','#03a9f4','#00bcd4','#1de9b6'];
+var colors = ['#0b62a4', '#b388ff', '#4da74d','#ff6600','#03a9f4','#00bcd4','#1de9b6', '#ff4081', '#ea80fc', '#cddc39', '#ffeb3b', '#ff9800', '#ff5722'];
 
 angular.module('MyApp')
   .directive('circful', function() {
@@ -12,7 +12,7 @@ angular.module('MyApp')
       template: myTemplate,
       link : function(scope,element){
         percentage.animationStep = 5;
-        percentage.foregroundColor = colors[Math.floor(Math.random() * 6) + 1];
+        percentage.foregroundColor = '#1565c0';
         percentage.backgroundColor = '#eceaeb';
         percentage.fontColor = '#2A3440';
         percentage.foregroundBorderWidth = 35;

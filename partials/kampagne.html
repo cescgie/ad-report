@@ -86,14 +86,14 @@
         <td>
           <div class="chartboxbig">
             <h5><a href="javascript:void(0)" ng-click="setOverFilledImpressions()">OVERALL FILLED IMPRESSION</a></h5>
-            <p>{{setOverFilledImpressionsDate.Datum}}</p>
+            <p>{{setOverFilledImpressionsDate.Datum}}{{setOverFilledImpressionsDate.Stunde}}</p>
             <div id="donut-ofi" style="width:300px"></div>
           </div>
         </td>
         <td>
           <div class="chartboxbig">
             <h5><a href="javascript:void(0)" ng-click="setOverallFillrate()">OVERALL FILLRATE</a></h5>
-            <p>{{setOverallFillrateDate.Datum}}</p>
+            <p>{{setOverallFillrateDate.Datum}}{{setOverallFillrateDate.Stunde}}</p>
             <div data-ng-repeat="ovifillrate in ovifillrates">
               <div class="circleoverall">
                 <Circful value="ovifillrate.percent">
@@ -145,7 +145,7 @@
 
 <script type="text/javascript">
   $('#select_date').on('change', function() {
-     $('#select_hour').val('Ganzer Tag');
+     $('#select_hour').val('all');
 
      angular.element($("#select_date")).scope().changeSelectedDate();
   });

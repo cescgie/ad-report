@@ -38,6 +38,9 @@ angular.module('MyApp')
 			$scope.kampagnes = response_data;
 		});
 
+    //update both graphs
+    $scope.setOverFilledImpressions(date,h);
+    $scope.setOverallFillrate(date,h);
 	};
 
 	$scope.showDetailGraph = function(alpha){
@@ -71,52 +74,69 @@ angular.module('MyApp')
   };
 
   $scope.changeSelectedDate = function(){
-    //$scope.setOverFilledImpressions($scope.choosenDate.Datum);
-    //$scope.setOverallFillrate($scope.choosenDate.Datum);
     $scope.setHour('all');
+    $scope.setOverFilledImpressions($scope.choosenDate.Datum,'all');
+    $scope.setOverallFillrate($scope.choosenDate.Datum,'all');
   }
 
-  $scope.setOverFilledImpressions = function (){
-    var date = $scope.choosenDate.Datum;
+  $scope.setOverFilledImpressions = function (datum,stunde){
+    var date = datum;
+    $scope.setparams = {};
+		$scope.setparams.stunde = stunde;
+		$scope.setparams.datum = date;
+
+    var h_reform = stunde;
     $scope.setOverFilledImpressionsDate = {"Datum":date};
+    if (stunde== "all") {
+      //Ganzer Tag
+			$scope.setparams.stunde = null;
+      $scope.setOverFilledImpressionsDate.Stunde = '';
+    }else{
+      // Nach Stunde
+      if (h_reform.length == 1) {
+        h_reform = '0'+h_reform;
+      }
+      $scope.setOverFilledImpressionsDate.Stunde = ' um '+h_reform+':00';
+    }
+
     $('#donut-ofi').empty();
-    if (date==null) {
-      toastr.error("Datum auswählen");
-    }else{
-      Kampagne.getOverallFilledImpression(date).then(function(response){
-        $('#donut-ofi').empty();
-        Morris.Donut({
-          element: 'donut-ofi',
-          data: response.data,
-          formatter: function (x, data) { return data.formatted; }
-        });
+    Kampagne.getOverallFilledImpression($scope.setparams).then(function(response){
+      $('#donut-ofi').empty();
+      Morris.Donut({
+        element: 'donut-ofi',
+        data: response.data,
+        formatter: function (x, data) { return data.formatted; }
       });
-    }
+    });
   }
 
-  $scope.setOverallFillrate = function (){
-    var date = $scope.choosenDate.Datum;
+  $scope.setOverallFillrate = function (datum,stunde){
+    var date = datum;
+    $scope.setparams = {};
+		$scope.setparams.stunde = stunde;
+		$scope.setparams.datum = date;
+
+    var h_reform = stunde;
     $scope.setOverallFillrateDate = {"Datum":date};
-    if (date==null) {
-      toastr.error("Datum auswählen");
+    if (stunde== "all") {
+      //Ganzer Tag
+			$scope.setparams.stunde = null;
+      $scope.setOverallFillrateDate.Stunde = '';
     }else{
-      Kampagne.getOverallFillrate(date).then(function(response){
-        var response_data = response.data;
-        var percent = JSON.stringify(response.data);
-        for (var i = 0; i < response_data.length; i++) {
-          response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
-        };
-        $scope.ovifillrates = response_data;
-      });
+      // Nach Stunde
+      if (h_reform.length == 1) {
+        h_reform = '0'+h_reform;
+      }
+      $scope.setOverallFillrateDate.Stunde = ' um '+h_reform+':00';
     }
+
+    Kampagne.getOverallFillrate($scope.setparams).then(function(response){
+      var response_data = response.data;
+      var percent = JSON.stringify(response.data);
+      for (var i = 0; i < response_data.length; i++) {
+        response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
+      };
+      $scope.ovifillrates = response_data;
+    });
   }
-
-  // function init(){
-  //   $scope.choosenDate = {"Datum":"2016-04-20"};
-  //   $scope.setHour('all');
-  //   $scope.setOverFilledImpressions($scope.choosenDate.Datum);
-  // }
-
-  //init();
-
 });
