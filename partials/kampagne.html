@@ -83,16 +83,21 @@
             <h5>{{kampagne.Impressions | number : fractionSize}} | {{kampagne.AdCounts | number : fractionSize | default : 0 }}</h5>
           </div>
         </td>
+      </tr>
+    </table>
+    <br>
+    <table>
+      <tr>
         <td>
-          <div class="chartboxbig">
-            <h5><a href="javascript:void(0)" ng-click="setOverFilledImpressions()">OVERALL FILLED IMPRESSION</a></h5>
+          <div class="chartboxbig" style="height:450px;width:350px">
+            <h5>OVERALL FILLED IMPRESSION</h5>
             <p>{{setOverFilledImpressionsDate.Datum}}{{setOverFilledImpressionsDate.Stunde}}</p>
-            <div id="donut-ofi" style="width:300px"></div>
+            <div id="donut-ofi" style="width:300px;width: 100%;margin: 0 auto;"></div>
           </div>
         </td>
         <td>
-          <div class="chartboxbig">
-            <h5><a href="javascript:void(0)" ng-click="setOverallFillrate()">OVERALL FILLRATE</a></h5>
+          <div class="chartboxbig" style="height:450px;width:350px">
+            <h5>OVERALL FILLRATE</h5>
             <p>{{setOverallFillrateDate.Datum}}{{setOverallFillrateDate.Stunde}}</p>
             <div data-ng-repeat="ovifillrate in ovifillrates">
               <div class="circleoverall">
@@ -105,9 +110,6 @@
           </div>
         </td>
       </tr>
-    </table>
-    <table>
-      <tr> </tr>
     </table>
   </div>
   <div id="spalte2">
