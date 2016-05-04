@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('KampagneCtrl', function($scope, $location, toastr, Kampagne) {
+  .controller('KampagneCtrl', function($scope, $location, toastr, Kampagne, usSpinnerService, $rootScope) {
     $scope.choosenDate = {};
     Kampagne.getDate().then(function(response){
       $scope.dates = response.data;
@@ -9,6 +9,7 @@ angular.module('MyApp')
     $scope.ovifillrates = {};
 
 	$scope.setHour = function(h){
+    $scope.startSpin();
 		var date = $scope.choosenDate.Datum;
 
 		$scope.setparams = {};
@@ -30,6 +31,7 @@ angular.module('MyApp')
     }
 
 		Kampagne.getKampagne($scope.setparams).then(function(response){
+      $scope.stopSpin();
 			var response_data = response.data;
 			var percent = JSON.stringify(response.data);
 			for (var i = 0; i < response_data.length; i++) {
@@ -44,12 +46,14 @@ angular.module('MyApp')
 	};
 
 	$scope.showDetailGraph = function(alpha){
+    $scope.startSpin();
 		var date = $scope.choosenDate.Datum;
     $scope.datas.datum = date;
     $('#area-kampagne').empty();
     $('#line-example').hide();
     if (alpha.length>0) {
       Kampagne.getDetailGraph(date).then(function(response){
+        $scope.stopSpin();
   			Morris.Line({
   	          element: 'area-kampagne',
   	          data: response.data,
@@ -74,12 +78,15 @@ angular.module('MyApp')
   };
 
   $scope.changeSelectedDate = function(){
+    $scope.startSpin();
     $scope.setHour('all');
     $scope.setOverFilledImpressions($scope.choosenDate.Datum,'all');
     $scope.setOverallFillrate($scope.choosenDate.Datum,'all');
+    $scope.stopSpin();
   }
 
   $scope.setOverFilledImpressions = function (datum,stunde){
+    $scope.startSpin();
     var date = datum;
     $scope.setparams = {};
 		$scope.setparams.stunde = stunde;
@@ -101,6 +108,7 @@ angular.module('MyApp')
 
     $('#donut-ofi').empty();
     Kampagne.getOverallFilledImpression($scope.setparams).then(function(response){
+      $scope.stopSpin();
       $('#donut-ofi').empty();
       Morris.Donut({
         element: 'donut-ofi',
@@ -111,6 +119,7 @@ angular.module('MyApp')
   }
 
   $scope.setOverallFillrate = function (datum,stunde){
+    $scope.startSpin();
     var date = datum;
     $scope.setparams = {};
 		$scope.setparams.stunde = stunde;
@@ -131,6 +140,7 @@ angular.module('MyApp')
     }
 
     Kampagne.getOverallFillrate($scope.setparams).then(function(response){
+      $scope.stopSpin();
       var response_data = response.data;
       var percent = JSON.stringify(response.data);
       for (var i = 0; i < response_data.length; i++) {
@@ -139,4 +149,28 @@ angular.module('MyApp')
       $scope.ovifillrates = response_data;
     });
   }
+
+  //spinner loader
+  $scope.startSpin = function() {
+    if (!$scope.spinneractive) {
+      usSpinnerService.spin('spinner-1');
+    }
+  };
+
+  $scope.stopSpin = function() {
+    if ($scope.spinneractive) {
+      usSpinnerService.stop('spinner-1');
+    }
+  };
+
+  $scope.spinneractive = false;
+
+  $rootScope.$on('us-spinner:spin', function(event, key) {
+    $scope.spinneractive = true;
+  });
+
+  $rootScope.$on('us-spinner:stop', function(event, key) {
+    $scope.spinneractive = false;
+  });
+
 });
