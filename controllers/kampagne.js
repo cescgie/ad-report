@@ -7,6 +7,7 @@ angular.module('MyApp')
 
     $scope.datas = {};
     $scope.ovifillrates = {};
+    
 	$scope.setHour = function(h){
 		var date = $scope.choosenDate.Datum;
 

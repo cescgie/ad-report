@@ -9,121 +9,8 @@ class Kampagne extends Controller {
    public function index() {
       $data['title'] = 'Kampagne';
 
-      $datums = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum",null,"GROUP BY Datum","ORDER BY Datum ASC");
-      $stundes = $this->_model->selectClauseGroupByOrderBy("kampagne","Stunde",null,"GROUP BY Stunde","ORDER BY Stunde ASC");
-
-      $data['Datum'] = $datums;
-      $data['Stunde'] = $stundes;
-
-      if(Session::get('Datum')){
-        $datum = Session::get('Datum');
-        $clause1 = "Datum = '$datum' ";
-        $select = "*";
-      }else{
-        $clause1 = "Datum != '2016-04-20' ";
-        Session::set('Datum','2016-04-20');
-      }
-
-      if(Session::get('Stunde')){
-        $stunde = Session::get('Stunde');
-        $stunde = str_replace("'","",$stunde);
-        $clause2 = "Stunde = '$stunde' ";
-        $select = "*";
-      }else{
-        $clause2 = "Stunde != '' ";
-        $groupby = "GROUP BY Datum,Kampagne";
-        $select = "Datum,Kampagne,SUM(Impressions) as Impressions,SUM(AdCounts) as AdCounts";
-      }
-
-      $data["datas"] = $this->_model->selectClauseGroupByOrderBy("kampagne",$select,"WHERE $clause1 AND $clause2",$groupby,null);
-
       $this->_view->render('header', $data);
-
-      $this->_view->render('kampagne/index', $data);
       $this->_view->render('footer', $data);
-   }
-
-   public function getGraph(){
-
-     if(Session::get('Datum')){
-       $datum = Session::get('Datum');
-       $clause1 = "Datum = '$datum' ";
-       $select = "*";
-     }else{
-       $clause1 = "Datum = '2016-04-20' ";
-       Session::set('Datum','2016-04-20');
-     }
-
-     if(Session::get('Kampagne')){
-       $kampagne = Session::get('Kampagne');
-       $clause2 = "Kampagne = '$kampagne'";
-     }else{
-       $clause2 = "Kampagne != '' ";
-     }
-
-     $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("kampagne","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1 AND $clause2",null,null);
-     $array = [];
-     for ($i=0; $i < 24 ; $i++) {
-       $array[] = array('hour'=>"$i");
-     }
-
-     $name = null;
-     foreach ($data["graphs"] as $key => $value) {
-       if (strpos($value['Kampagne'], '12250') !== false) {
-         $value['Kampagne'] = 'a';
-       }elseif (strpos($value['Kampagne'], '12169') !== false) {
-         $value['Kampagne'] = 'b';
-       }else {
-         $value['Kampagne'] = 'c';
-       }
-       $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
-       if ($array[$value['Stunde']]['hour'] == $value['Stunde']) {
-        //  if (Session::get('Kampagne')) {
-           $array[$value['Stunde']][$value['Kampagne']] = $diff;
-        //  }else{
-        //    if ($value['Kampagne']=='a') {
-        //     $array[$value['Stunde']]['a'] = $diff;
-        //    }
-        //    if ($value['Kampagne']=='b') {
-        //     $array[$value['Stunde']]['b'] = $diff - $array[$value['Stunde']]['a'];
-        //    }
-        //    if ($value['Kampagne']=='c') {
-        //     $array[$value['Stunde']]['c'] = $diff - $array[$value['Stunde']]['a'] - $array[$value['Stunde']]['b'];
-        //    }
-        //  }
-       }
-       $name = $value['Kampagne'];
-     }
-     return print_r(json_encode($array));
-   }
-
-   public function getOverllFilledImpression(){
-     if(Session::get('Datum')){
-       $datum = Session::get('Datum');
-       $clause1 = "Datum = '$datum' ";
-     }else{
-       $clause1 = "Datum = '2016-04-20' ";
-       Session::set('Datum','2016-04-20');
-     }
-
-     $select = "Kampagne as label,SUM(AdCounts) as value";
-     $groupby = "GROUP By Datum,Kampagne";
-
-     $data["doghnutOFI"] = $this->_model->selectClauseGroupByOrderBy("kampagne",$select,"WHERE $clause1",$groupby,null);
-
-     return print_r(json_encode($data["doghnutOFI"]));
-   }
-
-   public function date($date){
-   	  $data['title'] = 'Kampagne';
-   	  $where = "Datum = '$date'";
-      $select = $this->_model->selectOneClause("kampagne",$where);
-
-      echo '<pre>';
-      foreach ($select as $key => $value) {
-      	print_r($value);
-      }
-      echo '</pre>';
    }
 
    public function update(){
@@ -200,129 +87,81 @@ class Kampagne extends Controller {
        }
    }
 
-   public function set_Datum(){
-     $datum = $_GET['datum'];
-     if(Session::get('Datum')){
-       Session::clear('Datum');
-     }
-     Session::set('Datum',$datum);
-     URL::STAYCURRENTPAGE();
-  }
+    public function getDatum(){
+      $groupby = "GROUP BY Datum";
+      $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report","Datum",null,$groupby,null);
 
-  public function remove_date(){
-     if(Session::get('Datum')){
-       Session::clear('Datum');
-     }
-     URL::STAYCURRENTPAGE();
-  }
-
-  public function set_Stunde(){
-    $stunde = $_GET['stunde'];
-    if(Session::get('Stunde')){
-      Session::clear('Stunde');
-    }
-    Session::set('Stunde',$stunde);
-    URL::STAYCURRENTPAGE();
-  }
-
-  public function remove_stunde(){
-    if(Session::get('Stunde')){
-      Session::clear('Stunde');
-    }
-    URL::STAYCURRENTPAGE();
-  }
-
-  public function set_Kampagne($kamp){
-    $kampagne = $kamp;
-    if(Session::get('Kampagne')){
-      Session::clear('Kampagne');
-    }
-    Session::set('Kampagne',$kampagne);
-    URL::STAYCURRENTPAGE();
- }
-
- public function remove_Kampagne(){
-    if(Session::get('Kampagne')){
-      Session::clear('Kampagne');
-    }
-    URL::STAYCURRENTPAGE();
- }
-
-  public function getDatum(){
-    $groupby = "GROUP BY Datum";
-    $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report","Datum",null,$groupby,null);
-
-    return print_r(json_encode($data["datas"]));
-  }
-
-  public function getFillrate(){
-    $datum = $_GET["datum"];
-    $stunde = $_GET["stunde"];
-    $clause1 = "Datum = '$datum' ";
-    if ($stunde == "null") {
-      $select = "Datum,Kampagne,SUM(Impressions) as Impressions,SUM(AdCounts) as AdCounts";
-      $clause2 = "Stunde != '' ";
-      $groupby = "GROUP BY Datum,Kampagne";
-    }else{
-      $select = "*";
-      $clause2 = "Stunde = '$stunde' ";
+      return print_r(json_encode($data["datas"]));
     }
 
-    $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1 AND $clause2",$groupby,null);
+    public function getFillrate(){
+      $datum = $_GET["datum"];
+      $stunde = $_GET["stunde"];
+      $clause1 = "Datum = '$datum' ";
+      if ($stunde == "null") {
+        $select = "Datum,Kampagne,SUM(Impressions) as Impressions,SUM(AdCounts) as AdCounts";
+        $clause2 = "Stunde != '' ";
+        $groupby = "GROUP BY Datum,Kampagne";
+      }else{
+        $select = "*";
+        $clause2 = "Stunde = '$stunde' ";
+      }
 
-    return print_r(json_encode($data["datas"]));
-  }
+      $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1 AND $clause2",$groupby,null);
 
-  public function getDetailGraph(){
-     $datum = $_GET["datum"];
-     $clause1 = "Datum = '$datum' ";
+      return print_r(json_encode($data["datas"]));
+    }
 
-     $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("ad_report","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1",null,null);
-     $array = [];
-     for ($i=0; $i < 24 ; $i++) {
-       $array[] = array('hour'=>"$i");
-     }
+    public function getDetailGraph(){
+       $datum = $_GET["datum"];
+       $clause1 = "Datum = '$datum' ";
 
-     $name = null;
-     foreach ($data["graphs"] as $key => $value) {
-       $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
-       if ($array[$value['Stunde']]['hour'] == $value['Stunde']) {
-          $array[$value['Stunde']][$value['Kampagne']] = $diff;
+       $data["graphs"] = $this->_model->selectClauseGroupByOrderBy("ad_report","Datum, Kampagne, Stunde, Impressions, AdCounts","WHERE $clause1",null,null);
+       $array = [];
+       for ($i=0; $i < 24 ; $i++) {
+         $array[] = array('hour'=>"$i");
        }
-       $name = $value['Kampagne'];
-     }
-     return print_r(json_encode($array));
-   }
 
-   public function getOverallFilledImpression(){
-     $datum = $_GET["datum"];
-     $clause1 = "Datum = '$datum' ";
-
-     $select = "Kampagne as label,SUM(Impressions) as Impressions, SUM(AdCounts) as AdCounts";
-     $groupby = "GROUP By Datum,Kampagne";
-
-     $data["doghnutOFI"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1",$groupby,null);
-
-     $array = [];
-     foreach ($data["doghnutOFI"] as $key => $value) {
-       $total_impressions = $value['Impressions'];
-       $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
-       $array[$key]['label'] = $value['label'];
-       $array[$key]['formatted'] = $diff.'%';
-       $array[$key]['value'] = $diff;
+       $name = null;
+       foreach ($data["graphs"] as $key => $value) {
+         $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
+         if ($array[$value['Stunde']]['hour'] == $value['Stunde']) {
+            $array[$value['Stunde']][$value['Kampagne']] = $diff;
+         }
+         $name = $value['Kampagne'];
+       }
+       return print_r(json_encode($array));
      }
 
-     return print_r(json_encode($array));
-   }
+     public function getOverallFilledImpression(){
+       $datum = $_GET["datum"];
+       $clause1 = "Datum = '$datum' ";
 
-   public function getOverallFillrate(){
-     $datum = $_GET["datum"];
-     $clause1 = "Datum = '$datum' ";
+       $select = "Kampagne as label,SUM(Impressions) as Impressions, SUM(AdCounts) as AdCounts";
+       $groupby = "GROUP By Datum,Kampagne";
 
-     $select = "Datum, SUM(Impressions) as Impressions ,SUM(AdCounts) as AdCounts";
-     $data["doghnutOFRate"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1",null);
+       $data["doghnutOFI"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1",$groupby,null);
 
-     return print_r(json_encode($data["doghnutOFRate"]));
-   }
+       $array = [];
+       foreach ($data["doghnutOFI"] as $key => $value) {
+         $total_impressions = $value['Impressions'];
+         $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
+         $array[$key]['label'] = $value['label'];
+         $array[$key]['formatted'] = $diff.'%';
+         $array[$key]['value'] = $diff;
+       }
+
+       return print_r(json_encode($array));
+     }
+
+     public function getOverallFillrate(){
+       $datum = $_GET["datum"];
+       $clause1 = "Datum = '$datum' ";
+
+       $select = "Datum, SUM(Impressions) as Impressions ,SUM(AdCounts) as AdCounts";
+       $data["doghnutOFRate"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1",null);
+
+       return print_r(json_encode($data["doghnutOFRate"]));
+     }
 }
 ?>
