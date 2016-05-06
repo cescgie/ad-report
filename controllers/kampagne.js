@@ -10,39 +10,46 @@ angular.module('MyApp')
 
 	$scope.setHour = function(h){
     $scope.startSpin();
-		var date = $scope.choosenDate.Datum;
-
-		$scope.setparams = {};
-		$scope.setparams.stunde = h;
-		$scope.setparams.datum = date;
-
-    var h_reform = h;
-
-  	if (h== "all") {
-      //Ganzer Tag
-			$scope.setparams.stunde = null;
-      $scope.choosenDate.Stunde = '';
-		}else{
-      // Nach Stunde
-      if (h_reform.length == 1) {
-        h_reform = '0'+h_reform;
-      }
-      $scope.choosenDate.Stunde = ' um '+h_reform+':00';
-    }
-
-		Kampagne.getKampagne($scope.setparams).then(function(response){
+    if ($scope.choosenDate.Datum==null) {
+      toastr.warning("Bitte ein Datum auswählen", "Warning!");
       $scope.stopSpin();
-			var response_data = response.data;
-			var percent = JSON.stringify(response.data);
-			for (var i = 0; i < response_data.length; i++) {
-				response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
-			};
-			$scope.kampagnes = response_data;
-		});
+    }else if(!datumExists($scope.choosenDate.Datum)){
+      toastr.error('Kein Report am '+$scope.choosenDate.Datum, "Error!");
+      $scope.stopSpin();
+    }else{
+      var date = $scope.choosenDate.Datum;
+  		$scope.setparams = {};
+  		$scope.setparams.stunde = h;
+  		$scope.setparams.datum = date;
 
-    //update both graphs
-    $scope.setOverFilledImpressions(date,h);
-    $scope.setOverallFillrate(date,h);
+      var h_reform = h;
+
+    	if (h== "all") {
+        //Ganzer Tag
+  			$scope.setparams.stunde = null;
+        $scope.choosenDate.Stunde = '';
+  		}else{
+        // Nach Stunde
+        if (h_reform.length == 1) {
+          h_reform = '0'+h_reform;
+        }
+        $scope.choosenDate.Stunde = ' um '+h_reform+':00';
+      }
+
+  		Kampagne.getKampagne($scope.setparams).then(function(response){
+        $scope.stopSpin();
+  			var response_data = response.data;
+  			var percent = JSON.stringify(response.data);
+  			for (var i = 0; i < response_data.length; i++) {
+  				response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
+  			};
+  			$scope.kampagnes = response_data;
+  		});
+
+      //update both graphs
+      $scope.setOverFilledImpressions(date,h);
+      $scope.setOverallFillrate(date,h);
+    }
 	};
 
 	$scope.showDetailGraph = function(alpha){
@@ -86,9 +93,8 @@ angular.module('MyApp')
       $scope.setOverallFillrate($scope.choosenDate.Datum,'all');
       $scope.setDetailAverage($scope.choosenDate.Datum);
     }else{
-      toastr.error('Kein Report am '+$scope.choosenDate.Datum, "Error");
+      toastr.error('Kein Report am '+$scope.choosenDate.Datum, "Error!");
     }
-
     $scope.stopSpin();
   }
 
