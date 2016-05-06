@@ -26,14 +26,13 @@
           </form>
         </td> -->
         <td>
+          <label>Datum</label>
           <datepicker date-format="yyyy-MM-dd">
             <input id="select_date" class="form-control" ng-model="choosenDate.Datum" placeholder="Datum auswählen" type="text" ng-change="changeSelectedDate()"/>
           </datepicker>
         </td>
-      <!-- </tr>
-      <tr> -->
-        <!-- <td>Stunde:</td> -->
         <td>
+          <label>Stunde</label>
             <select id="select_hour" class="form-control">
               <option value="null">Stunde auswählen</option>
               <option value="all">Ganzer Tag</option>
@@ -63,17 +62,7 @@
               <option value="23">23:00</option>
             </select>
           </td>
-          <!--<td>
-            {{ availableHour }}
-            <select ng-model="availableHour" ng-options="hour.Hour for hour in hours">
-              <option value="">Stunde auswählen</option>
-            </select>
-          </td>-->
       </tr>
-      <!-- <tr>
-        <td>Ganzer Tag:</td>
-        <td><input type="checkbox"></td>
-      </tr> -->
     </table>
     <hr>
     <h4>FILLRATE ( {{choosenDate.Datum}}{{choosenDate.Stunde}} )</h4>
@@ -109,7 +98,6 @@
               <div class="circleoverall">
                 <Circful value="ovifillrate.percent">
               </div>
-              <!-- <div class="circleoverall" id="circleoverall2"></div> -->
               <hr>
               <h5>{{ovifillrate.Impressions | number : fractionSize }} | {{ovifillrate.AdCounts | number : fractionSize || 0 }}</h5>
             </div>
@@ -123,31 +111,29 @@
     <h4>DETAIL</h4>
      <table>
       <tr>
-      <td><div class="chartboxbig linecharts">
-      <h5>Compare {{datas.datum}}</h5>
-      <div id="area-kampagne"></div>
-      <div id="line-example"></div>
-      <div class="" id="line1"></div>
-      <hr>
-      <div style="text-align:left;margin-left:20px;">
-        <div data-ng-repeat="kampagne in kampagnes">
-           <input type="checkbox" ng-checked="checkedKampagne.indexOf(kampagne.Kampagne) != -1" ng-click="toggleCheck(kampagne.Kampagne)"/>{{kampagne.Kampagne}}
-        </div>
-      </div>
-    </div>
-  </td>
-    <td>
-    <div class="chartboxbig linecharts">
-      <h5>Durchschnitt {{datas.datum}}</h5>
-      <div id="area-kampagne-average"></div>
-      <!-- <div id="line-example-average"></div> -->
-      <div class="" id="line1"></div>
-    </div>
-    </td>
+        <td>
+          <div class="chartboxbig linecharts">
+            <h5>Compare {{datas.datum}}</h5>
+            <div id="area-kampagne"></div>
+            <div id="line-example"></div>
+            <div style="text-align:left;margin-left:20px;">
+              <div data-ng-repeat="kampagne in kampagnes">
+                 <input type="checkbox" ng-checked="checkedKampagne.indexOf(kampagne.Kampagne) != -1" ng-click="toggleCheck(kampagne.Kampagne)"/>{{kampagne.Kampagne}}
+              </div>
+            </div>
+          </div>
+       </td>
+       <td>
+          <div class="chartboxbig linecharts">
+            <h5>Durchschnitt {{datas.datum}}</h5>
+            <div id="area-kampagne-average"></div>
+            <div id="line-example-average"></div>
+            <div class="" id="line1"></div>
+          </div>
+        </td>
       </tr>
     </table>
   </div>
-
 </div>
 </div>
 
@@ -197,6 +183,40 @@
       xkey: 'y',
       ykeys: ['a', 'b'],
       labels: ['Kampagne 1', 'Kampagne 2'],
+      parseTime: false
+    });
+
+    Morris.Line({
+      element: 'line-example-average',
+      data: [
+        { y: '00'},
+        { y: '01'},
+        { y: '02'},
+        { y: '03'},
+        { y: '04'},
+        { y: '05'},
+        { y: '06'},
+        { y: '07'},
+        { y: '08'},
+        { y: '09'},
+        { y: '10'},
+        { y: '11'},
+        { y: '12'},
+        { y: '13'},
+        { y: '14'},
+        { y: '15'},
+        { y: '16'},
+        { y: '17'},
+        { y: '18'},
+        { y: '19'},
+        { y: '20'},
+        { y: '21'},
+        { y: '22'},
+        { y: '23'}
+      ],
+      xkey: 'y',
+      ykeys: ['Durchschnitt'],
+      labels: ['Durchschnitt'],
       parseTime: false
     });
 </script>

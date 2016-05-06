@@ -56,10 +56,10 @@ angular.module('MyApp')
     $scope.startSpin();
 		var date = $scope.choosenDate.Datum;
     $scope.datas.datum = date;
-    $('#area-kampagne').empty();
     $('#line-example').hide();
     if (alpha.length>0) {
       Kampagne.getDetailGraph(date).then(function(response){
+        $('#area-kampagne').empty();
         $scope.stopSpin();
   			Morris.Line({
   	          element: 'area-kampagne',
@@ -173,6 +173,7 @@ angular.module('MyApp')
     $scope.startSpin();
 		var date = $scope.choosenDate.Datum;
     $scope.datas.datum = date;
+    $('#line-example-average').hide();
     Kampagne.getDetailAverage(date).then(function(response){
       $('#area-kampagne-average').empty();
         $scope.stopSpin();
