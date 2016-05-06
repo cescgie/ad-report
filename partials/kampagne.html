@@ -11,57 +11,50 @@
   <div id="spalte1">
     <table>
       <tr>
-        <!-- <td>Datum:</td> -->
-        <!--<td>
-          <form>
-            <select>
-              <option>Today</option>
-              <option selected>Yesterday</option>
-              <option>This Week</option>
-              <option>Last 7 Days</option>
-              <option>Last Week</option>
-              <option>This Month</option>
-              <option>Last Month</option>
-            </select>
-          </form>
-        </td> -->
+        <form name="rangeDateForm">
+          <label for="rangeDateSelect">Options:</label>
+          <select name="rangeDateSelect" id="rangeDateSelect"
+            ng-options="option.name for option in data.availableOptions track by option.id"
+            ng-model="data.selectedOption"></select>
+        </form>
+      </tr>
+      <tr ng-if="data.selectedOption.id == 2">
+        <td>
+          <label>From </label>
+          <datepicker date-format="yyyy-MM-dd">
+            <input id="select_date_1" class="form-control" ng-model="choosenRangeDate.Datum1" placeholder="Datum auswählen" type="text"/>
+          </datepicker>
+        </td>
+        <td>
+          <label>to </label>
+          <datepicker date-format="yyyy-MM-dd">
+            <input id="select_date_2" class="form-control" ng-model="choosenRangeDate.Datum2" placeholder="Datum auswählen" type="text"/>
+          </datepicker>
+        </td>
+        <td>
+          <label>.</label><br>
+          <input type="button" href="javascript:void(0)" class="btn btn-default" ng-click="changeSelectedRange()" value="Go"></input>
+        </td>
+      </tr>
+      <tr ng-if="data.selectedOption.id == 1">
         <td>
           <label>Datum</label>
           <datepicker date-format="yyyy-MM-dd">
-            <input id="select_date" class="form-control" ng-model="choosenDate.Datum" placeholder="Datum auswählen" type="text" ng-change="changeSelectedDate()"/>
+            <input id="select_date" class="form-control" ng-model="choosenDate.Datum" placeholder="Datum auswählen" type="text"/>
           </datepicker>
         </td>
         <td>
           <label>Stunde</label>
-            <select id="select_hour" class="form-control">
-              <option value="null">Stunde auswählen</option>
-              <option value="all">Ganzer Tag</option>
-              <option value="0">00:00</option>
-              <option value="1">01:00</option>
-              <option value="2">02:00</option>
-              <option value="3">03:00</option>
-              <option value="4">04:00</option>
-              <option value="5">05:00</option>
-              <option value="6">06:00</option>
-              <option value="7">07:00</option>
-              <option value="8">08:00</option>
-              <option value="9">09:00</option>
-              <option value="10">10:00</option>
-              <option value="11">11:00</option>
-              <option value="12">12:00</option>
-              <option value="13">13:00</option>
-              <option value="14">14:00</option>
-              <option value="15">15:00</option>
-              <option value="16">16:00</option>
-              <option value="17">17:00</option>
-              <option value="18">18:00</option>
-              <option value="19">19:00</option>
-              <option value="20">20:00</option>
-              <option value="21">21:00</option>
-              <option value="22">22:00</option>
-              <option value="23">23:00</option>
-            </select>
-          </td>
+          <form name="formStunde">
+             <select class="form-control" name="selectStunde" id="selectStunde"
+               ng-options="option.name for option in datax.availableStunde track by option.id"
+               ng-model="datax.selectedStunde"></select>
+           </form>
+        </td>
+        <td>
+          <label>.</label><br>
+          <input type="button" href="javascript:void(0)" class="btn btn-default" ng-click="changeSelectedDate()" value="Go"></input>
+        </td>
       </tr>
     </table>
     <hr>
@@ -139,12 +132,11 @@
 
 <script type="text/javascript">
   $('#select_date').on('change', function() {
-     $('#select_hour').val('all');
+    $('#select_hour').val('all');
   });
 
-  $('#select_hour').on('change', function() {
-  var selected = $(this).val();
-
+  $('#select_hour').on('change keyup', function() {
+    var selected = $(this).val();
     if(selected!="null"){
       angular.element($("#select_hour")).scope().setHour(selected);
     }

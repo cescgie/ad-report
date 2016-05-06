@@ -8,6 +8,45 @@ angular.module('MyApp')
     $scope.datas = {};
     $scope.ovifillrates = {};
 
+    $scope.data = {
+      availableOptions: [
+        {id: '1', name: 'Specific date'},
+        {id: '2', name: 'Range dates'},
+      ],
+      selectedOption: {id: '1', name: 'Specific date'} //This sets the default value of the select in the ui
+    };
+
+    $scope.datax = {
+      availableStunde: [
+        {id: 'all', name: 'Ganzer Tag'},
+        {id: '0', name: '00:00'},
+        {id: '1', name: '00:01'},
+        {id: '2', name: '00:02'},
+        {id: '3', name: '00:03'},
+        {id: '4', name: '00:04'},
+        {id: '5', name: '00:05'},
+        {id: '6', name: '00:06'},
+        {id: '7', name: '00:07'},
+        {id: '8', name: '00:08'},
+        {id: '9', name: '00:09'},
+        {id: '10', name: '00:10'},
+        {id: '11', name: '00:11'},
+        {id: '12', name: '00:12'},
+        {id: '13', name: '00:13'},
+        {id: '14', name: '00:14'},
+        {id: '15', name: '00:15'},
+        {id: '16', name: '00:16'},
+        {id: '17', name: '00:17'},
+        {id: '18', name: '00:18'},
+        {id: '19', name: '00:19'},
+        {id: '20', name: '00:20'},
+        {id: '21', name: '00:21'},
+        {id: '22', name: '00:22'},
+        {id: '23', name: '00:23'}
+      ],
+      selectedStunde: {id: 'all', name: 'Ganzer Tag'} //This sets the default value of the select in the ui
+    };
+
 	$scope.setHour = function(h){
     $scope.startSpin();
     if ($scope.choosenDate.Datum==null) {
@@ -87,15 +126,19 @@ angular.module('MyApp')
   $scope.changeSelectedDate = function(){
     $scope.startSpin();
     toastr.clear();
-    if(datumExists($scope.choosenDate.Datum)){
-      $scope.setHour('all');
-      $scope.setOverFilledImpressions($scope.choosenDate.Datum,'all');
-      $scope.setOverallFillrate($scope.choosenDate.Datum,'all');
+    var stunde = $scope.datax.selectedStunde.id;
+    if ($scope.choosenDate.Datum==null) {
+      toastr.warning("Bitte ein Datum auswählen", "Warning!");
+      $scope.stopSpin();
+    }else if(datumExists($scope.choosenDate.Datum)){
+      $scope.setHour(stunde);
+      $scope.setOverFilledImpressions($scope.choosenDate.Datum,stunde);
+      $scope.setOverallFillrate($scope.choosenDate.Datum,stunde);
       $scope.setDetailAverage($scope.choosenDate.Datum);
     }else{
       toastr.error('Kein Report am '+$scope.choosenDate.Datum, "Error!");
+      $scope.stopSpin();
     }
-    $scope.stopSpin();
   }
 
   function datumExists(Datum) {
@@ -210,5 +253,26 @@ angular.module('MyApp')
   $rootScope.$on('us-spinner:stop', function(event, key) {
     $scope.spinneractive = false;
   });
+
+  $scope.choosenRangeDate = {};
+  $scope.changeSelectedRange = function(){
+    $scope.startSpin();
+    toastr.clear();
+
+    if ($scope.choosenRangeDate.Datum1==null || $scope.choosenRangeDate.Datum2==null) {
+      toastr.warning("Bitte range Datum auswählen", "Warning!");
+      $scope.stopSpin();
+    }else{
+      var startDate = new Date($scope.choosenRangeDate.Datum1);
+      var endDate = new Date($scope.choosenRangeDate.Datum2);
+      if (startDate > endDate){
+        toastr.warning("Bitte 2.Datum richtig auswählen", "Warning!");
+        $scope.stopSpin();
+      }else{
+        console.log('startDate : '+$scope.choosenRangeDate.Datum1);
+        console.log('endDate : '+$scope.choosenRangeDate.Datum2);
+      }
+    }
+  };
 
 });
