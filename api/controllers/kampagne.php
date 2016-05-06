@@ -202,5 +202,18 @@ class Kampagne extends Controller {
 
       return print_r(json_encode($array));
      }
+
+     public function getFillrateRange(){
+       $datum1 = $_GET["datum1"];
+       $datum2 = $_GET["datum2"];
+       $clause1 = "Datum between date('$datum1') and date('$datum2')";
+       $select = "Kampagne,SUM(Impressions) as Impressions,SUM(AdCounts) as AdCounts";
+       $groupby = "GROUP BY Kampagne";
+
+       $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1",$groupby,null);
+
+       return print_r(json_encode($data["datas"]));
+     }
+     
 }
 ?>

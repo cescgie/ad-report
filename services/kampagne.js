@@ -18,6 +18,9 @@ angular.module('MyApp')
       },
       getDetailAverage:function(datum){
         return $http.get('api/kampagne/getDetailAverage?datum='+datum);
+      },
+      getFillrateRange: function(setParams){
+        return $http.get('api/kampagne/getFillrateRange?datum1='+setParams.datum1+'&datum2='+setParams.datum2);
       }
     };
   });

@@ -269,8 +269,18 @@ angular.module('MyApp')
         toastr.warning("Bitte 2.Datum richtig auswählen", "Warning!");
         $scope.stopSpin();
       }else{
-        console.log('startDate : '+$scope.choosenRangeDate.Datum1);
-        console.log('endDate : '+$scope.choosenRangeDate.Datum2);
+        $scope.setparams = {};
+    		$scope.setparams.datum1 = $scope.choosenRangeDate.Datum1;
+    		$scope.setparams.datum2 = $scope.choosenRangeDate.Datum2;
+        Kampagne.getFillrateRange($scope.setparams).then(function(response){
+          $scope.stopSpin();
+    			var response_data = response.data;
+    			var percent = JSON.stringify(response.data);
+    			for (var i = 0; i < response_data.length; i++) {
+    				response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
+    			};
+    			$scope.kampagnes = response_data;
+        });
       }
     }
   };
