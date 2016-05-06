@@ -124,9 +124,9 @@ class Kampagne extends Controller {
 
        $name = null;
        foreach ($data["graphs"] as $key => $value) {
-         $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
+         $diff = (float)(($value['AdCounts']/$value['Impressions'])*100);
          if ($array[$value['Stunde']]['hour'] == $value['Stunde']) {
-            $array[$value['Stunde']][$value['Kampagne']] = $diff;
+            $array[$value['Stunde']][$value['Kampagne']] = round($diff);
          }
          $name = $value['Kampagne'];
        }
@@ -151,10 +151,10 @@ class Kampagne extends Controller {
        $array = [];
        foreach ($data["doghnutOFI"] as $key => $value) {
          $total_impressions = $value['Impressions'];
-         $diff = (int)(($value['AdCounts']/$value['Impressions'])*100+.5);
+         $diff = (float)(($value['AdCounts']/$value['Impressions'])*100);
          $array[$key]['label'] = $value['label'];
-         $array[$key]['formatted'] = $diff.'%';
-         $array[$key]['value'] = $diff;
+         $array[$key]['formatted'] = round($diff).'%';
+         $array[$key]['value'] = round($diff);
        }
 
        return print_r(json_encode($array));
@@ -191,9 +191,12 @@ class Kampagne extends Controller {
        }
 
        foreach ($data["detailsAverage"] as $key => $value) {
-         $average = (int)(($value['AdCounts']/$value['Impressions'])*100+.5)/7;
          if ($array[$value['Stunde']]['hour'] == $value['Stunde']) {
-            $array[$value['Stunde']]['Average'] = round($array[$value['Stunde']]['Average']+$average);
+           $array_2[$key]['AdCounts'] = $value['AdCounts'];
+           $array_2[$key]['Impressions'] = $value['Impressions'];
+           $array[$value['Stunde']]['AdCounts'] = $array_2[$key]['AdCounts'] + $array[$value['Stunde']]['AdCounts'];
+           $array[$value['Stunde']]['Impressions'] = $array_2[$key]['Impressions'] + $array[$value['Stunde']]['Impressions'];
+           $array[$value['Stunde']]['Average'] = round(($array[$value['Stunde']]['AdCounts']/$array[$value['Stunde']]['Impressions']*100));
          }
        }
 
