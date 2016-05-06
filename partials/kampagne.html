@@ -25,16 +25,22 @@
             </select>
           </form>
         </td> -->
-        <td>
+        <!-- <td>
+          {{choosenDate.Datum}}
           <select id="select_date" ng-model="choosenDate" ng-options="date.Datum for date in dates" ng-change="changeSelectedDate()">
             <option value="">Datum auswählen</option>
           </select>
+        </td> -->
+        <td>
+          <datepicker date-format="yyyy-MM-dd">
+            <input id="select_date" class="form-control" ng-model="choosenDate.Datum" placeholder="Datum auswählen" type="text" ng-change="changeSelectedDate()"/>
+          </datepicker>
         </td>
       </tr>
       <tr>
         <td>Stunde:</td>
         <td>
-            <select id="select_hour">
+            <select id="select_hour" class="form-control">
               <option value="null">Stunde auswählen</option>
               <option value="all">Ganzer Tag</option>
               <option value="0">00:00</option>
@@ -153,8 +159,6 @@
 <script type="text/javascript">
   $('#select_date').on('change', function() {
      $('#select_hour').val('all');
-
-     angular.element($("#select_date")).scope().changeSelectedDate();
   });
 
   $('#select_hour').on('change', function() {

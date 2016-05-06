@@ -79,11 +79,23 @@ angular.module('MyApp')
 
   $scope.changeSelectedDate = function(){
     $scope.startSpin();
-    $scope.setHour('all');
-    $scope.setOverFilledImpressions($scope.choosenDate.Datum,'all');
-    $scope.setOverallFillrate($scope.choosenDate.Datum,'all');
-    $scope.setDetailAverage($scope.choosenDate.Datum);
+    toastr.clear();
+    if(datumExists($scope.choosenDate.Datum)){
+      $scope.setHour('all');
+      $scope.setOverFilledImpressions($scope.choosenDate.Datum,'all');
+      $scope.setOverallFillrate($scope.choosenDate.Datum,'all');
+      $scope.setDetailAverage($scope.choosenDate.Datum);
+    }else{
+      toastr.error('Kein Report am '+$scope.choosenDate.Datum, "Error");
+    }
+
     $scope.stopSpin();
+  }
+
+  function datumExists(Datum) {
+    return $scope.dates.some(function(el) {
+      return el.Datum === Datum;
+    });
   }
 
   $scope.setOverFilledImpressions = function (datum,stunde){

@@ -1,3 +1,4 @@
 *.xls
 api/static/PHPExcel/*
 api/config.php
+node_modules/*
