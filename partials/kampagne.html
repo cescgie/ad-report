@@ -25,12 +25,6 @@
             </select>
           </form>
         </td> -->
-        <!-- <td>
-          {{choosenDate.Datum}}
-          <select id="select_date" ng-model="choosenDate" ng-options="date.Datum for date in dates" ng-change="changeSelectedDate()">
-            <option value="">Datum auswählen</option>
-          </select>
-        </td> -->
         <td>
           <datepicker date-format="yyyy-MM-dd">
             <input id="select_date" class="form-control" ng-model="choosenDate.Datum" placeholder="Datum auswählen" type="text" ng-change="changeSelectedDate()"/>
