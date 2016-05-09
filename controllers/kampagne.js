@@ -254,7 +254,13 @@ angular.module('MyApp')
           $scope.checkedKampagne.splice($scope.checkedKampagne.indexOf(kampagne), 1);
       }
 
-      $scope.showDetailGraph($scope.checkedKampagne);
+      if ($scope.checkedKampagne.length>null) {
+        $scope.showDetailGraph($scope.checkedKampagne);
+      }else{
+        $('#area-kampagne').empty();
+        $('#line-example').show();
+        $scope.stopSpin();
+      }
     };
 
     $scope.setDetailAverage = function(datum1,datum2){
@@ -310,7 +316,7 @@ angular.module('MyApp')
       toastr.clear();
 
       var stunde = $scope.datax.selectedStunde.id;
-      if ($scope.choosenDate.Datum==null) {
+      if ($scope.choosenDate.Datum==null || $scope.choosenDate.Datum == '') {
         toastr.warning("Bitte ein Datum auswählen", "Warning!");
         $scope.stopSpin();
       }else if(datumExists($scope.choosenDate.Datum)){
@@ -345,8 +351,11 @@ angular.module('MyApp')
       $scope.startSpin();
       toastr.clear();
 
-      if ($scope.choosenRangeDate.Datum1==null || $scope.choosenRangeDate.Datum2==null) {
-        toastr.warning("Bitte range Datum auswählen", "Warning!");
+      if ($scope.choosenRangeDate.Datum1==null || $scope.choosenRangeDate.Datum1== '') {
+        toastr.warning("Bitte range 1. Datum auswählen", "Warning!");
+        $scope.stopSpin();
+      }else  if ($scope.choosenRangeDate.Datum2==null || $scope.choosenRangeDate.Datum2== '') {
+        toastr.warning("Bitte range 2. Datum auswählen", "Warning!");
         $scope.stopSpin();
       }else{
         var startDate = new Date($scope.choosenRangeDate.Datum1);
