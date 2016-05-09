@@ -25,6 +25,9 @@ angular.module('MyApp')
       getDetailGraph:function(datum){
         return $http.get('api/kampagne/getDetailGraph?datum='+datum);
       },
+      getDetailGraphRange:function(setParams){
+        return $http.get('api/kampagne/getDetailGraph?datum1='+setParams.datum1+'&datum2='+setParams.datum2);
+      },
       getDetailAverage:function(setParams){
         return $http.get('api/kampagne/getDetailAverage?datum='+setParams.datum);
       },

@@ -199,22 +199,49 @@ angular.module('MyApp')
 
   	$scope.showDetailGraph = function(alpha){
       $scope.startSpin();
-  		var date = $scope.choosenDate.Datum;
-      $scope.datas.datum = date;
-      $('#line-example').hide();
-      if (alpha.length>0) {
-        Kampagne.getDetailGraph(date).then(function(response){
-          $('#area-kampagne').empty();
-          $scope.stopSpin();
-    			Morris.Line({
-    	          element: 'area-kampagne',
-    	          data: response.data,
-    	          xkey: 'hour',
-    	          ykeys: alpha,
-    	          labels: alpha,
-    	          parseTime: false
-            	});
-    		});
+
+      if ($scope.choosenRangeDate.Datum1!=null && $scope.choosenRangeDate.Datum2!=null) {
+        $('#line-example').hide();
+        var datum1 = $scope.choosenRangeDate.Datum1;
+        var datum2 = $scope.choosenRangeDate.Datum2;
+
+        $scope.setparams = {};
+        $scope.setparams.datum1 = datum1;
+        $scope.setparams.datum2 = datum2;
+        $scope.setCompareDate = {"Datum":datum1+' bis '+datum2};
+
+        if (alpha.length>0) {
+          Kampagne.getDetailGraphRange($scope.setparams).then(function(response){
+            $('#area-kampagne').empty();
+            $scope.stopSpin();
+      			Morris.Line({
+      	          element: 'area-kampagne',
+      	          data: response.data,
+      	          xkey: 'x_achse_label',
+      	          ykeys: alpha,
+      	          labels: alpha,
+      	          parseTime: false
+              	});
+      		});
+        }
+      }else{
+        var date = $scope.choosenDate.Datum;
+        $scope.setCompareDate = {"Datum":date};
+        $('#line-example').hide();
+        if (alpha.length>0) {
+          Kampagne.getDetailGraph(date).then(function(response){
+            $('#area-kampagne').empty();
+            $scope.stopSpin();
+      			Morris.Line({
+      	          element: 'area-kampagne',
+      	          data: response.data,
+      	          xkey: 'x_achse_label',
+      	          ykeys: alpha,
+      	          labels: alpha,
+      	          parseTime: false
+              	});
+      		});
+        }
       }
   	};
 
@@ -281,6 +308,14 @@ angular.module('MyApp')
     $scope.changeSelectedDate = function(){
       $scope.startSpin();
       toastr.clear();
+
+      $('#area-kampagne').empty();
+      $('#line-example').show();
+      //clear check box
+      $scope.checkedKampagne = [];
+      //clear detail date
+      $scope.setCompareDate = [];
+
       var stunde = $scope.datax.selectedStunde.id;
       if ($scope.choosenDate.Datum==null) {
         toastr.warning("Bitte ein Datum auswählen", "Warning!");
@@ -290,6 +325,8 @@ angular.module('MyApp')
         $scope.setOverFilledImpressions($scope.choosenDate.Datum,stunde,null);
         $scope.setOverallFillrate($scope.choosenDate.Datum,stunde,null);
         $scope.setDetailAverage($scope.choosenDate.Datum,null);
+        $scope.choosenRangeDate.Datum1 = null;
+        $scope.choosenRangeDate.Datum2 = null;
       }else{
         toastr.error('Kein Report am '+$scope.choosenDate.Datum, "Error!");
         $scope.stopSpin();
@@ -306,6 +343,14 @@ angular.module('MyApp')
     $scope.changeSelectedRange = function(){
       $scope.startSpin();
       toastr.clear();
+      $('#area-kampagne').empty();
+      $('#line-example').show();
+      
+      //clear check box
+      $scope.checkedKampagne = [];
+      //clear detail date
+      $scope.setCompareDate = [];
+
       if ($scope.choosenRangeDate.Datum1==null || $scope.choosenRangeDate.Datum2==null) {
         toastr.warning("Bitte range Datum auswählen", "Warning!");
         $scope.stopSpin();
