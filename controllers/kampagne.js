@@ -47,47 +47,53 @@ angular.module('MyApp')
       selectedStunde: {id: 'all', name: 'Ganzer Tag'} //This sets the default value of the select in the ui
     };
 
-	$scope.setHour = function(h){
+	$scope.setFillrate = function(datum1,stunde,datum2){
     $scope.startSpin();
-    if ($scope.choosenDate.Datum==null) {
-      toastr.warning("Bitte ein Datum auswählen", "Warning!");
-      $scope.stopSpin();
-    }else if(!datumExists($scope.choosenDate.Datum)){
-      toastr.error('Kein Report am '+$scope.choosenDate.Datum, "Error!");
-      $scope.stopSpin();
+    var date = datum1;
+  	$scope.setparams = {};
+
+    if (datum2!=null && stunde==null) {
+      //2 dates range
+      $scope.setparams.datum1 = datum1;
+      $scope.setparams.datum2 = datum2;
+      $scope.setFillRateDate = {"Datum":datum1+' bis '+datum2};
+      Kampagne.getFillrateRange($scope.setparams).then(function(response){
+        $scope.stopSpin();
+        var response_data = response.data;
+        var percent = JSON.stringify(response.data);
+        for (var i = 0; i < response_data.length; i++) {
+          response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
+        };
+        $scope.kampagnes = response_data;
+      });
+
     }else{
-      var date = $scope.choosenDate.Datum;
-  		$scope.setparams = {};
-  		$scope.setparams.stunde = h;
-  		$scope.setparams.datum = date;
+      $scope.setparams.stunde = stunde;
+      $scope.setparams.datum = date;
+      $scope.setFillRateDate = {"Datum":date};
+      var h_reform = stunde;
 
-      var h_reform = h;
-
-    	if (h== "all") {
+      if (stunde== "all") {
         //Ganzer Tag
-  			$scope.setparams.stunde = null;
-        $scope.choosenDate.Stunde = '';
-  		}else{
+        $scope.setparams.stunde = null;
+        $scope.setFillRateDate.Stunde = '';
+      }else{
         // Nach Stunde
         if (h_reform.length == 1) {
           h_reform = '0'+h_reform;
         }
-        $scope.choosenDate.Stunde = ' um '+h_reform+':00';
+        $scope.setFillRateDate.Stunde = ' um '+h_reform+':00';
       }
 
-  		Kampagne.getKampagne($scope.setparams).then(function(response){
+      Kampagne.getFillrate($scope.setparams).then(function(response){
         $scope.stopSpin();
-  			var response_data = response.data;
-  			var percent = JSON.stringify(response.data);
-  			for (var i = 0; i < response_data.length; i++) {
-  				response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
-  			};
-  			$scope.kampagnes = response_data;
-  		});
-
-      //update both graphs
-      $scope.setOverFilledImpressions(date,h,null);
-      $scope.setOverallFillrate(date,h,null);
+        var response_data = response.data;
+        var percent = JSON.stringify(response.data);
+        for (var i = 0; i < response_data.length; i++) {
+          response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
+        };
+        $scope.kampagnes = response_data;
+      });
     }
 	};
 
@@ -131,7 +137,7 @@ angular.module('MyApp')
       toastr.warning("Bitte ein Datum auswählen", "Warning!");
       $scope.stopSpin();
     }else if(datumExists($scope.choosenDate.Datum)){
-      $scope.setHour(stunde);
+      $scope.setFillrate($scope.choosenDate.Datum,stunde,null);
       $scope.setOverFilledImpressions($scope.choosenDate.Datum,stunde,null);
       $scope.setOverallFillrate($scope.choosenDate.Datum,stunde,null);
       $scope.setDetailAverage($scope.choosenDate.Datum);
@@ -306,16 +312,9 @@ angular.module('MyApp')
         $scope.setparams = {};
     		$scope.setparams.datum1 = $scope.choosenRangeDate.Datum1;
     		$scope.setparams.datum2 = $scope.choosenRangeDate.Datum2;
-        Kampagne.getFillrateRange($scope.setparams).then(function(response){
-          $scope.stopSpin();
-    			var response_data = response.data;
-    			var percent = JSON.stringify(response.data);
-    			for (var i = 0; i < response_data.length; i++) {
-    				response_data[i].percent = Math.round((response_data[i].AdCounts/response_data[i].Impressions)*100);
-    			};
-    			$scope.kampagnes = response_data;
-        });
 
+        //Fillrate
+        $scope.setFillrate($scope.setparams.datum1,null,$scope.setparams.datum2);
         //Overall Filled Impressions
         $scope.setOverFilledImpressions($scope.setparams.datum1,null,$scope.setparams.datum2);
         //Overall Fillrate

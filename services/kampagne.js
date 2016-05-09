@@ -4,7 +4,7 @@ angular.module('MyApp')
       getDate: function(){
         return $http.get('api/kampagne/getDatum');
       },
-      getKampagne:function(setParams){
+      getFillrate:function(setParams){
         return $http.get('api/kampagne/getFillrate?datum='+setParams.datum+'&stunde='+setParams.stunde);
       },
       getDetailGraph:function(datum){
@@ -20,7 +20,7 @@ angular.module('MyApp')
         return $http.get('api/kampagne/getDetailAverage?datum='+datum);
       },
       getFillrateRange: function(setParams){
-        return $http.get('api/kampagne/getFillrateRange?datum1='+setParams.datum1+'&datum2='+setParams.datum2);
+        return $http.get('api/kampagne/getFillrate?datum1='+setParams.datum1+'&datum2='+setParams.datum2);
       },
       getOverallFilledImpressionRange:function(setParams){
         return $http.get('api/kampagne/getOverallFilledImpression?datum1='+setParams.datum1+'&datum2='+setParams.datum2);

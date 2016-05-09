@@ -95,19 +95,27 @@ class Kampagne extends Controller {
     }
 
     public function getFillrate(){
-      $datum = $_GET["datum"];
-      $stunde = $_GET["stunde"];
-      $clause1 = "Datum = '$datum' ";
-      if ($stunde == "null") {
-        $select = "Datum,Kampagne,SUM(Impressions) as Impressions,SUM(AdCounts) as AdCounts";
-        $clause2 = "Stunde > -1";
-        $groupby = "GROUP BY Kampagne";
+      if ($_GET["datum1"] && $_GET["datum2"]) {
+        //getFillrate with range dates
+        $datum1 = $_GET["datum1"];
+        $datum2 = $_GET["datum2"];
+        $clause = "Datum between date('$datum1') and date('$datum2')";
       }else{
-        $select = "*";
-        $clause2 = "Stunde = '$stunde' ";
+        $datum = $_GET["datum"];
+        $stunde = $_GET["stunde"];
+        $clause1 = "Datum = '$datum' ";
+        if ($stunde == "null") {
+          $clause2 = "Stunde > -1";
+        }else{
+          $clause2 = "Stunde = '$stunde' ";
+        }
+        $clause = $clause1.' AND '.$clause2;
       }
 
-      $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1 AND $clause2",$groupby,null);
+      $select = "Kampagne,SUM(Impressions) as Impressions,SUM(AdCounts) as AdCounts";
+      $groupby = "GROUP BY Kampagne";
+
+      $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause",$groupby,null);
 
       return print_r(json_encode($data["datas"]));
     }
