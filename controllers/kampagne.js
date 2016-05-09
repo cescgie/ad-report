@@ -309,13 +309,6 @@ angular.module('MyApp')
       $scope.startSpin();
       toastr.clear();
 
-      $('#area-kampagne').empty();
-      $('#line-example').show();
-      //clear check box
-      $scope.checkedKampagne = [];
-      //clear detail date
-      $scope.setCompareDate = [];
-
       var stunde = $scope.datax.selectedStunde.id;
       if ($scope.choosenDate.Datum==null) {
         toastr.warning("Bitte ein Datum auswählen", "Warning!");
@@ -325,8 +318,16 @@ angular.module('MyApp')
         $scope.setOverFilledImpressions($scope.choosenDate.Datum,stunde,null);
         $scope.setOverallFillrate($scope.choosenDate.Datum,stunde,null);
         $scope.setDetailAverage($scope.choosenDate.Datum,null);
+        //clear choosenRangeDate
         $scope.choosenRangeDate.Datum1 = null;
         $scope.choosenRangeDate.Datum2 = null;
+        //clear current graph and change to default graph
+        $('#area-kampagne').empty();
+        $('#line-example').show();
+        //clear check box
+        $scope.checkedKampagne = [];
+        //clear detail date
+        $scope.setCompareDate = [];
       }else{
         toastr.error('Kein Report am '+$scope.choosenDate.Datum, "Error!");
         $scope.stopSpin();
@@ -343,13 +344,6 @@ angular.module('MyApp')
     $scope.changeSelectedRange = function(){
       $scope.startSpin();
       toastr.clear();
-      $('#area-kampagne').empty();
-      $('#line-example').show();
-      
-      //clear check box
-      $scope.checkedKampagne = [];
-      //clear detail date
-      $scope.setCompareDate = [];
 
       if ($scope.choosenRangeDate.Datum1==null || $scope.choosenRangeDate.Datum2==null) {
         toastr.warning("Bitte range Datum auswählen", "Warning!");
@@ -361,6 +355,14 @@ angular.module('MyApp')
           toastr.warning("Bitte 2.Datum richtig auswählen", "Warning!");
           $scope.stopSpin();
         }else{
+          //clear current graph and change to default graph
+          $('#area-kampagne').empty();
+          $('#line-example').show();
+          //clear check box
+          $scope.checkedKampagne = [];
+          //clear detail date
+          $scope.setCompareDate = [];
+
           $scope.setparams = {};
       		$scope.setparams.datum1 = $scope.choosenRangeDate.Datum1;
       		$scope.setparams.datum2 = $scope.choosenRangeDate.Datum2;
