@@ -135,11 +135,7 @@
     $('#select_hour').val('all');
   });
 
-  $('#select_hour').on('change keyup', function() {
-    var selected = $(this).val();
-    if(selected!="null"){
-      angular.element($("#select_hour")).scope().setHour(selected);
-    }
+  $('#select_hour').on('change', function() {
   });
 </script>
 

@@ -134,19 +134,27 @@ class Kampagne extends Controller {
      }
 
      public function getOverallFilledImpression(){
-       $datum = $_GET["datum"];
-       $clause1 = "Datum = '$datum' ";
-       $stunde = $_GET["stunde"];
-       if ($stunde == "null") {
-         $clause2 = "Stunde > -1";
+       if ($_GET["datum1"] && $_GET["datum2"]) {
+         //getOverallFilledImpression with range dates
+         $datum1 = $_GET["datum1"];
+         $datum2 = $_GET["datum2"];
+         $clause = "Datum between date('$datum1') and date('$datum2')";
        }else{
-         $clause2 = "Stunde = '$stunde' ";
+         $datum = $_GET["datum"];
+         $clause1 = "Datum = '$datum' ";
+         $stunde = $_GET["stunde"];
+         if ($stunde == "null") {
+           $clause2 = "Stunde > -1";
+         }else{
+           $clause2 = "Stunde = '$stunde' ";
+         }
+         $clause = $clause1.' AND '.$clause2;
        }
 
        $select = "Kampagne as label,SUM(Impressions) as Impressions, SUM(AdCounts) as AdCounts";
        $groupby = "GROUP By Kampagne";
 
-       $data["doghnutOFI"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1 AND $clause2",$groupby,null);
+       $data["doghnutOFI"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause",$groupby,null);
 
        $array = [];
        foreach ($data["doghnutOFI"] as $key => $value) {
@@ -161,18 +169,26 @@ class Kampagne extends Controller {
      }
 
      public function getOverallFillrate(){
-       $datum = $_GET["datum"];
-       $clause1 = "Datum = '$datum' ";
-       $stunde = $_GET["stunde"];
-       if ($stunde == "null") {
-         $clause2 = "Stunde > -1 ";
+       if ($_GET["datum1"] && $_GET["datum2"]) {
+         //getOverallFillrate with range dates
+         $datum1 = $_GET["datum1"];
+         $datum2 = $_GET["datum2"];
+         $clause = "Datum between date('$datum1') and date('$datum2')";
        }else{
-         $clause2 = "Stunde = '$stunde' ";
+         $datum = $_GET["datum"];
+         $clause1 = "Datum = '$datum' ";
+         $stunde = $_GET["stunde"];
+         if ($stunde == "null") {
+           $clause2 = "Stunde > -1";
+         }else{
+           $clause2 = "Stunde = '$stunde' ";
+         }
+         $clause = $clause1.' AND '.$clause2;
        }
 
        $select = "Datum, SUM(Impressions) as Impressions ,SUM(AdCounts) as AdCounts";
 
-       $data["doghnutOFRate"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause1 AND $clause2",null);
+       $data["doghnutOFRate"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,"WHERE $clause",null);
 
        return print_r(json_encode($data["doghnutOFRate"]));
      }
@@ -214,6 +230,6 @@ class Kampagne extends Controller {
 
        return print_r(json_encode($data["datas"]));
      }
-     
+
 }
 ?>

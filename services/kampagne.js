@@ -21,6 +21,12 @@ angular.module('MyApp')
       },
       getFillrateRange: function(setParams){
         return $http.get('api/kampagne/getFillrateRange?datum1='+setParams.datum1+'&datum2='+setParams.datum2);
+      },
+      getOverallFilledImpressionRange:function(setParams){
+        return $http.get('api/kampagne/getOverallFilledImpression?datum1='+setParams.datum1+'&datum2='+setParams.datum2);
+      },
+      getOverallFillrateRange:function(setParams){
+        return $http.get('api/kampagne/getOverallFillrate?datum1='+setParams.datum1+'&datum2='+setParams.datum2);
       }
     };
   });
