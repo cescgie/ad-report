@@ -843,7 +843,7 @@ Licensed under the BSD-2-Clause License.
       if(row.label.toString().length == 1){
         row.label = '0'+row.label;
       }
-      content = "<div class='morris-hover-row-label'>Stunde : " + row.label + ":00</div>";
+      content = "<div class='morris-hover-row-label'>" + row.label + "</div>";
       _ref = row.y;
       for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
         y = _ref[j];
