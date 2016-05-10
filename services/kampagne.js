@@ -1,7 +1,7 @@
 angular.module('MyApp')
   .factory('Kampagne', function($http) {
     return {
-      getDate: function(){
+      getAvailableDates: function(){
         return $http.get('api/kampagne/getDatum');
       },
       getFillrate:function(setParams){

@@ -1,14 +1,19 @@
 angular.module('MyApp')
-  .controller('KampagneCtrl', function($scope, $location, toastr, Kampagne, usSpinnerService, $rootScope) {
+  .controller('KampagneCtrl', function($scope, toastr, Kampagne, usSpinnerService, $rootScope) {
+
     $scope.choosenDate = {};
-    Kampagne.getDate().then(function(response){
+
+    /**
+    * Get available dates from database
+    * @param : -
+    */
+    Kampagne.getAvailableDates().then(function(response){
       $scope.dates = response.data;
     });
 
-    $scope.datas = {};
-
-    $scope.ovifillrates = {};
-
+    /**
+    * Data for 1. select option
+    */
     $scope.data = {
       availableOptions: [
         {id: '1', name: 'Specific date'},
@@ -17,6 +22,9 @@ angular.module('MyApp')
       selectedOption: {id: '1', name: 'Specific date'} //This sets the default value of the select in the ui
     };
 
+    /**
+    * Data for Stunde select option
+    */
     $scope.datax = {
       availableStunde: [
         {id: 'all', name: 'Ganzer Tag'},
@@ -48,6 +56,20 @@ angular.module('MyApp')
       selectedStunde: {id: 'all', name: 'Ganzer Tag'} //This sets the default value of the select in the ui
     };
 
+    /**
+    * Check the existenz of selected date
+    * @param : date('Y-m-d')
+    */
+    function datumExists(Datum) {
+      return $scope.dates.some(function(el) {
+        return el.Datum === Datum;
+      });
+    }
+
+    /**
+    * Populate data for fillrate sections
+    * @param : date1,hour(if available),date2(if available)
+    */
   	$scope.setFillrate = function(datum1,stunde,datum2){
       $scope.startSpin();
       var date = datum1;
@@ -98,6 +120,10 @@ angular.module('MyApp')
       }
   	};
 
+    /**
+    * Populate data for Overall Filled Impressions section
+    * @param : date1,hour(if available),date2(if available)
+    */
     $scope.setOverFilledImpressions = function (datum1,stunde,datum2){
       $scope.startSpin();
       var date = datum1;
@@ -146,10 +172,15 @@ angular.module('MyApp')
       }
     };
 
+    /**
+    * Populate data for Overall Fillrate sections
+    * @param : date1,hour(if available),date2(if available)
+    */
     $scope.setOverallFillrate = function (datum1,stunde,datum2){
       $scope.startSpin();
       var date = datum1;
       $scope.setparams = {};
+      $scope.ovifillrates = {};
       $('#donut-ofi').empty();
 
       if (datum2!=null && stunde==null) {
@@ -197,6 +228,10 @@ angular.module('MyApp')
       }
     };
 
+    /**
+    * Set data for Detail Graph to compare each Kampagne
+    * @param : Kampagne name in array
+    */
   	$scope.showDetailGraph = function(alpha){
       $scope.startSpin();
 
@@ -246,7 +281,10 @@ angular.module('MyApp')
   	};
 
     $scope.checkedKampagne = [];
-
+    /**
+    * Set checked checkbox from each Kampagne to compare in detail graph
+    * @param : checked checkbox
+    */
     $scope.toggleCheck = function (kampagne) {
       if ($scope.checkedKampagne.indexOf(kampagne) === -1) {
           $scope.checkedKampagne.push(kampagne);
@@ -263,6 +301,10 @@ angular.module('MyApp')
       }
     };
 
+    /**
+    * Populate data for Durchschnitt sections
+    * @param : date1 and date2 (by range dates function)
+    */
     $scope.setDetailAverage = function(datum1,datum2){
       $scope.startSpin();
   		var date = datum1;
@@ -342,12 +384,6 @@ angular.module('MyApp')
       }
     }
 
-    function datumExists(Datum) {
-      return $scope.dates.some(function(el) {
-        return el.Datum === Datum;
-      });
-    }
-
     $scope.choosenRangeDate = {};
     $scope.changeSelectedRange = function(){
       $scope.startSpin();
@@ -356,7 +392,7 @@ angular.module('MyApp')
       if ($scope.choosenRangeDate.Datum1==null || $scope.choosenRangeDate.Datum1== '') {
         toastr.warning("Bitte 1.Datum auswählen", "Warning!");
         $scope.stopSpin();
-      }else  if ($scope.choosenRangeDate.Datum2==null || $scope.choosenRangeDate.Datum2== '') {
+      }else if($scope.choosenRangeDate.Datum2==null || $scope.choosenRangeDate.Datum2== '') {
         toastr.warning("Bitte 2.Datum auswählen", "Warning!");
         $scope.stopSpin();
       }else if(!datumExists($scope.choosenRangeDate.Datum1)){
