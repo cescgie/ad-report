@@ -221,7 +221,7 @@ angular.module('MyApp')
       	          ykeys: alpha,
       	          labels: alpha,
       	          parseTime: false
-              	});
+            });
       		});
         }
       }else{
@@ -239,7 +239,7 @@ angular.module('MyApp')
       	          ykeys: alpha,
       	          labels: alpha,
       	          parseTime: false
-              	});
+            });
       		});
         }
       }
@@ -285,7 +285,7 @@ angular.module('MyApp')
       	          ykeys: ['Average'],
       	          labels: ['Durchschnitt'],
       	          parseTime: false
-              	});
+            });
     		});
       }else{
         $scope.setDetailAverageDate = {"Datum":date};
@@ -301,7 +301,7 @@ angular.module('MyApp')
       	          ykeys: ['Average'],
       	          labels: ['Durchschnitt'],
       	          parseTime: false
-              	});
+            });
     		});
       }
     }
@@ -320,10 +320,6 @@ angular.module('MyApp')
         toastr.warning("Bitte ein Datum auswählen", "Warning!");
         $scope.stopSpin();
       }else if(datumExists($scope.choosenDate.Datum)){
-        $scope.setFillrate($scope.choosenDate.Datum,stunde,null);
-        $scope.setOverFilledImpressions($scope.choosenDate.Datum,stunde,null);
-        $scope.setOverallFillrate($scope.choosenDate.Datum,stunde,null);
-        $scope.setDetailAverage($scope.choosenDate.Datum,null);
         //clear choosenRangeDate
         $scope.choosenRangeDate.Datum1 = null;
         $scope.choosenRangeDate.Datum2 = null;
@@ -334,6 +330,12 @@ angular.module('MyApp')
         $scope.checkedKampagne = [];
         //clear detail date
         $scope.setCompareDate = [];
+
+        //call all functions
+        $scope.setFillrate($scope.choosenDate.Datum,stunde,null);
+        $scope.setOverFilledImpressions($scope.choosenDate.Datum,stunde,null);
+        $scope.setOverallFillrate($scope.choosenDate.Datum,stunde,null);
+        $scope.setDetailAverage($scope.choosenDate.Datum,null);
       }else{
         toastr.error('Kein Report am '+$scope.choosenDate.Datum, "Error!");
         $scope.stopSpin();

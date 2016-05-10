@@ -15,7 +15,8 @@ class Kampagne extends Controller {
 
    public function getDatum(){
       $groupby = "GROUP BY Datum";
-      $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report","Datum",null,$groupby,null);
+      $clause = "WHERE Impressions != ''";
+      $data["datas"] = $this->_model->selectClauseGroupByOrderBy("ad_report","Datum",$clause,$groupby,null);
 
       return print_r(json_encode($data["datas"]));
    }
