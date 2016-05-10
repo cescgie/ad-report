@@ -354,10 +354,16 @@ angular.module('MyApp')
       toastr.clear();
 
       if ($scope.choosenRangeDate.Datum1==null || $scope.choosenRangeDate.Datum1== '') {
-        toastr.warning("Bitte range 1. Datum auswählen", "Warning!");
+        toastr.warning("Bitte 1.Datum auswählen", "Warning!");
         $scope.stopSpin();
       }else  if ($scope.choosenRangeDate.Datum2==null || $scope.choosenRangeDate.Datum2== '') {
-        toastr.warning("Bitte range 2. Datum auswählen", "Warning!");
+        toastr.warning("Bitte 2.Datum auswählen", "Warning!");
+        $scope.stopSpin();
+      }else if(!datumExists($scope.choosenRangeDate.Datum1)){
+        toastr.error('Kein Report am '+$scope.choosenRangeDate.Datum1, "Error!");
+        $scope.stopSpin();
+      }else if(!datumExists($scope.choosenRangeDate.Datum2)){
+        toastr.error('Kein Report am '+$scope.choosenRangeDate.Datum2, "Error!");
         $scope.stopSpin();
       }else{
         var startDate = new Date($scope.choosenRangeDate.Datum1);
