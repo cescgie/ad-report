@@ -197,5 +197,87 @@ class Kampagne extends Controller {
        return print_r(json_encode($array));
      }
 
+     public function notif(){
+       $current_date = date('Y-m-d');
+       $gestern = date('Y-m-d', strtotime('-1 day', strtotime($current_date)));
+       $vorgestern = date('Y-m-d', strtotime('-2 day', strtotime($current_date)));
+
+       $clause1 = "WHERE Datum ='$gestern'";
+       $select = "Kampagne,SUM(Impressions) as Impressions, SUM(AdCounts) as AdCounts";
+       $groupby = "GROUP By Kampagne";
+
+       $data["gestern"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,$clause1,$groupby,null);
+
+       $clause2 = "WHERE Datum ='$vorgestern'";
+       $data["vorgestern"] = $this->_model->selectClauseGroupByOrderBy("ad_report",$select,$clause2,$groupby,null);
+
+       $array = [];
+       for ($i=0; $i < count($data["gestern"]); $i++) {
+         if ($data["gestern"][$i]['Kampagne']==$data["vorgestern"][$i]['Kampagne']) {
+           $array[$i]["Kampagne"] = $data["gestern"][$i]['Kampagne'];
+           //Impressions ad
+           $array[$i]["Impressions_gestern"] = $data["gestern"][$i]['Impressions'];
+           $array[$i]["Impressions_vorgestern"] = $data["vorgestern"][$i]['Impressions'];
+           $array[$i]["Impressions_diff"] = $data["gestern"][$i]['Impressions'] - $data["vorgestern"][$i]['Impressions'];
+           //AdCounts ad
+           $array[$i]["AdCounts_gestern"] = $data["gestern"][$i]['AdCounts'];
+           $array[$i]["AdCounts_vorgestern"] = $data["vorgestern"][$i]['AdCounts'];
+           $array[$i]["AdCounts_diff"] = $data["gestern"][$i]['AdCounts'] - $data["vorgestern"][$i]['AdCounts'];
+           //diff
+           $array[$i]["prozent_gestern"] = round(($data["gestern"][$i]['AdCounts']/$data["gestern"][$i]['Impressions'])*100,2);
+           $array[$i]["prozent_vorgestern"] = round(($data["vorgestern"][$i]['AdCounts']/$data["vorgestern"][$i]['Impressions'])*100,2);
+           //state
+           if($array[$i]["prozent_gestern"]==$array[$i]["prozent_vorgestern"]){
+             $array[$i]["state"] = "stagnant";
+           }elseif ($array[$i]["prozent_gestern"]>$array[$i]["prozent_vorgestern"]) {
+             $array[$i]["state"] = "up";
+           }else{
+             $array[$i]["state"] = "down";
+           }
+         }
+       }
+
+        $to = "y.firmanda@netpoint-media.de";
+        $subject = "Ad-Report";
+
+
+        $message = '<html><head>
+        <title>Ad-Report</title>
+        <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        </style>
+        </head>
+        <body>
+        <p>Vergleich zwischen '.$vorgestern.' und '.$gestern.'</p>
+        <table border="1" style="width:100%">
+        <tr>
+        <td>Kampagne</td>
+        <td>'.$vorgestern.'</td>
+        <td>'.$gestern.'</td>
+        <td>status</td>
+        </tr>';
+        foreach($array as $val){
+             $message .=
+             '<tr>
+             <td>'.$val['Kampagne'].'</td>
+             <td>'.$val['prozent_vorgestern'].'%</td>
+             <td>'.$val['prozent_gestern'].'%</td>
+             <td>'.$val['state'].'</td>
+             </tr>';
+        }
+        $message .= '</table>';
+
+        $headers = "MIME-Version: 1.0" . "\r\n";
+        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+
+        $headers .= 'From: <y.firmanda@netpoint-media.de>' . "\r\n";
+        // $headers .= 'Cc: y.firmanda@netpoint-media.de' . "\r\n";
+
+        mail($to,$subject,$message,$headers);
+    }
+
 }
 ?>
